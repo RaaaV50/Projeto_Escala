@@ -1,1058 +1,1329 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Escala de Enfermagem</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap">
-<style>
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2128;
-    --border: #30363d;
-    --accent: #2ea043;
-    --accent2: #388bfd;
-    --accent3: #f78166;
-    --accent4: #e3b341;
-    --text: #e6edf3;
-    --text2: #8b949e;
-    --manha: #1a3a4a;
-    --manha-text: #58a6ff;
-    --tarde: #2d2a1a;
-    --tarde-text: #e3b341;
-    --noite: #2a1a3a;
-    --noite-text: #bc8cff;
-    --folga: #1a2a1a;
-    --folga-text: #3fb950;
-    --ferias: #3a1a1a;
-    --ferias-text: #f78166;
-    --fds: #1a1a3a;
-    --fds-text: #79c0ff;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* HEADER */
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
-
-  .logo h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.25rem;
-    color: var(--text);
-  }
-
-  .logo span {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--text2);
-    display: block;
-    margin-top: -2px;
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  /* TABS */
-  .tabs {
-    display: flex;
-    gap: 0;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-  }
-
-  .tab {
-    padding: 0.875rem 1.5rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text2);
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
-
-  /* MAIN LAYOUT */
-  .main { padding: 2rem; max-width: 1600px; margin: 0 auto; }
-
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* CARDS */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.25rem;
-  }
-
-  .card-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  /* FORM ELEMENTS */
-  label {
-    display: block;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: var(--text2);
-    margin-bottom: 0.375rem;
-  }
-
-  input, select {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.625rem 0.875rem;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.875rem;
-    transition: border-color 0.2s;
-    outline: none;
-  }
-
-  input:focus, select:focus { border-color: var(--accent2); }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
-  }
-
-  .form-group { margin-bottom: 0; }
-
-  /* BUTTONS */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-  .btn-primary:hover { background: #3fb950; }
-
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { background: var(--border); }
-
-  .btn-blue {
-    background: var(--accent2);
-    color: white;
-  }
-  .btn-blue:hover { background: #58a6ff; }
-
-  .btn-danger {
-    background: transparent;
-    color: var(--accent3);
-    border: 1px solid var(--accent3);
-    padding: 0.375rem 0.75rem;
-    font-size: 0.8rem;
-  }
-  .btn-danger:hover { background: var(--ferias); }
-
-  .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
-
-  /* NURSES TABLE */
-  .nurses-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-  }
-
-  .nurses-table th {
-    text-align: left;
-    padding: 0.625rem 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nurses-table td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nurses-table tr:last-child td { border-bottom: none; }
-  .nurses-table tr:hover td { background: var(--surface2); }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.625rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-
-  .badge-manha { background: var(--manha); color: var(--manha-text); }
-  .badge-tarde { background: var(--tarde); color: var(--tarde-text); }
-  .badge-noite { background: var(--noite); color: var(--noite-text); }
-  .badge-flexivel { background: var(--folga); color: var(--folga-text); }
-
-  /* SCHEDULE GRID */
-  .schedule-container { overflow-x: auto; }
-
-  .schedule-grid {
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 0.75rem;
-    min-width: 900px;
-  }
-
-  .schedule-grid th {
-    padding: 0.5rem 0.375rem;
-    text-align: center;
-    font-weight: 600;
-    border: 1px solid var(--border);
-    white-space: nowrap;
-    font-size: 0.7rem;
-    color: var(--text2);
-    background: var(--surface2);
-  }
-
-  .schedule-grid th.nurse-col {
-    text-align: left;
-    padding-left: 0.75rem;
-    min-width: 160px;
-    position: sticky;
-    left: 0;
-    background: var(--surface2);
-    z-index: 2;
-  }
-
-  .schedule-grid td {
-    padding: 0.375rem 0.25rem;
-    text-align: center;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.15s;
-    min-width: 50px;
-  }
-
-  .schedule-grid td.nurse-name {
-    text-align: left;
-    padding-left: 0.75rem;
-    font-weight: 500;
-    color: var(--text);
-    white-space: nowrap;
-    position: sticky;
-    left: 0;
-    background: var(--surface);
-    z-index: 1;
-    cursor: default;
-  }
-
-  .schedule-grid td.nurse-name:hover { background: var(--surface); }
-
-  .schedule-grid tr:nth-child(even) td.nurse-name { background: var(--surface2); }
-  .schedule-grid tr:nth-child(even) td.nurse-name:hover { background: var(--surface2); }
-
-  .cell-M  { background: var(--manha); color: var(--manha-text); font-weight: 600; }
-  .cell-T  { background: var(--tarde); color: var(--tarde-text); font-weight: 600; }
-  .cell-N  { background: var(--noite); color: var(--noite-text); font-weight: 600; }
-  .cell-FO { background: var(--folga); color: var(--folga-text); font-weight: 600; }
-  .cell-FE { background: var(--ferias); color: var(--ferias-text); font-weight: 600; }
-  .cell-F  { background: var(--fds); color: var(--fds-text); font-weight: 600; }
-  .cell-D  { background: var(--fds); color: var(--fds-text); font-weight: 600; }
-
-  .schedule-grid td:hover:not(.nurse-name) {
-    opacity: 0.75;
-    transform: scale(1.05);
-  }
-
-  .weekend-col { background: rgba(88, 166, 255, 0.05) !important; }
-  .sunday-col { background: rgba(248, 129, 102, 0.05) !important; }
-
-  /* STATS */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-  }
-
-  .stat-label {
-    font-size: 0.75rem;
-    color: var(--text2);
-    font-weight: 500;
-    margin-bottom: 0.375rem;
-  }
-
-  .stat-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .stat-sub {
-    font-size: 0.7rem;
-    color: var(--text2);
-    margin-top: 0.125rem;
-  }
-
-  /* ALERTS */
-  .alert {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.875rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.75rem;
-    font-size: 0.875rem;
-  }
-
-  .alert-warning { background: rgba(227, 179, 65, 0.1); border: 1px solid rgba(227, 179, 65, 0.3); color: var(--accent4); }
-  .alert-success { background: rgba(46, 160, 67, 0.1); border: 1px solid rgba(46, 160, 67, 0.3); color: var(--accent); }
-  .alert-info { background: rgba(56, 139, 253, 0.1); border: 1px solid rgba(56, 139, 253, 0.3); color: var(--accent2); }
-
-  /* LEGEND */
-  .legend {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.75rem;
-    color: var(--text2);
-  }
-
-  .legend-dot {
-    width: 20px; height: 20px;
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.6rem;
-    font-weight: 700;
-  }
-
-  /* CONTEXT MENU */
-  .ctx-menu {
-    position: fixed;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.375rem;
-    z-index: 1000;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    display: none;
-    min-width: 160px;
-    user-select: none;
-  }
-
-  .ctx-menu.show { display: block; }
-
-  /* HISTÓRICO PANEL */
-  .historico-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 600;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-  .historico-overlay.show { display: flex; }
-
-  .historico-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.75rem;
-    width: 580px;
-    max-width: 95vw;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .historico-panel h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.25rem;
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .hist-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .hist-info { flex: 1; }
-  .hist-title { font-weight: 600; font-size: 0.9375rem; margin-bottom: 0.25rem; }
-  .hist-meta { font-size: 0.75rem; color: var(--text2); }
-
-  .hist-actions { display: flex; gap: 0.5rem; }
-
-  .cell-FERIADO { background: rgba(247,129,102,0.2); color: var(--accent3); font-weight: 700; }
-  .feriado-header { color: var(--accent3) !important; }
-
-  .ctx-item {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.8125rem;
-    transition: background 0.15s;
-  }
-
-  .ctx-item:hover { background: var(--surface2); }
-  .ctx-dot { width: 10px; height: 10px; border-radius: 3px; }
-
-  /* TOOLTIP */
-  .tooltip { position: relative; }
-  .tooltip:hover::after {
-    content: attr(data-tip);
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #000;
-    color: var(--text);
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 999;
-  }
-
-  /* MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    display: none;
-  }
-  .modal-overlay.show { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.75rem;
-    width: 480px;
-    max-width: 95vw;
-  }
-
-  .modal h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-  }
-
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.625rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 0.75rem;
-    color: var(--text2);
-  }
-
-  .tag button {
-    background: none;
-    border: none;
-    color: var(--text2);
-    cursor: pointer;
-    font-size: 0.875rem;
-    line-height: 1;
-    padding: 0;
-  }
-
-  .tag button:hover { color: var(--accent3); }
-
-  /* COVERAGE INDICATOR */
-  .coverage-bar {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-top: 0.375rem;
-    overflow: hidden;
-  }
-
-  .coverage-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.3s;
-  }
-
-  .fill-ok { background: var(--accent); }
-  .fill-warn { background: var(--accent4); }
-  .fill-bad { background: var(--accent3); }
-
-  /* DIVIDER */
-  hr { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
-
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--text2);
-  }
-
-  .empty-state .icon { font-size: 2.5rem; margin-bottom: 1rem; }
-  .empty-state h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
-  .empty-state p { font-size: 0.875rem; }
-
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    .main { padding: 1rem; }
-    .form-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    header { padding: 0 1rem; }
-    .tabs { padding: 0 1rem; overflow-x: auto; }
-  }
-
-  .month-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .month-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    text-transform: capitalize;
-  }
-
-  .section-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.125rem;
-    margin-bottom: 1rem;
-  }
-
-  select[multiple] {
-    height: auto;
-    min-height: 80px;
-  }
-
-  .nurse-count-badge {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 0.125rem 0.625rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--text2);
-  }
-
-  .cobertura-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8125rem;
-  }
-
-  .cobertura-table th, .cobertura-table td {
-    padding: 0.5rem 0.75rem;
-    text-align: center;
-    border: 1px solid var(--border);
-  }
-
-  .cobertura-table th {
-    background: var(--surface2);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text2);
-    font-weight: 600;
-  }
-
-  .cob-ok { color: var(--accent); }
-  .cob-warn { color: var(--accent4); }
-  .cob-bad { color: var(--accent3); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escala de Enfermagem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap">
+  <link rel="shortcut icon" type="imagex/png" href="/imagens/tumb.ico">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --accent: #2ea043;
+      --accent2: #388bfd;
+      --accent3: #f78166;
+      --accent4: #e3b341;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --manha: #1a3a4a;
+      --manha-text: #58a6ff;
+      --tarde: #2d2a1a;
+      --tarde-text: #e3b341;
+      --noite: #2a1a3a;
+      --noite-text: #bc8cff;
+      --folga: #1a2a1a;
+      --folga-text: #3fb950;
+      --ferias: #3a1a1a;
+      --ferias-text: #f78166;
+      --fds: #1a1a3a;
+      --fds-text: #79c0ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .logo h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      color: var(--text);
+    }
+
+    .logo span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text2);
+      display: block;
+      margin-top: -2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 0;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+
+    .tab {
+      padding: 0.875rem 1.5rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text2);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--accent2);
+      border-bottom-color: var(--accent2);
+    }
+
+    /* MAIN LAYOUT */
+    .main {
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* FORM ELEMENTS */
+    label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 0.375rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.625rem 0.875rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent2);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #3fb950;
+    }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-blue {
+      background: var(--accent2);
+      color: white;
+    }
+
+    .btn-blue:hover {
+      background: #58a6ff;
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--accent3);
+      border: 1px solid var(--accent3);
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger:hover {
+      background: var(--ferias);
+    }
+
+    .btn-sm {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    /* NURSES TABLE */
+    .nurses-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .nurses-table th {
+      text-align: left;
+      padding: 0.625rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nurses-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nurses-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .nurses-table tr:hover td {
+      background: var(--surface2);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.625rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-manha {
+      background: var(--manha);
+      color: var(--manha-text);
+    }
+
+    .badge-tarde {
+      background: var(--tarde);
+      color: var(--tarde-text);
+    }
+
+    .badge-noite {
+      background: var(--noite);
+      color: var(--noite-text);
+    }
+
+    .badge-flexivel {
+      background: var(--folga);
+      color: var(--folga-text);
+    }
+
+    /* SCHEDULE GRID */
+    .schedule-container {
+      overflow-x: auto;
+    }
+
+    .schedule-grid {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.75rem;
+      min-width: 900px;
+    }
+
+    .schedule-grid th {
+      padding: 0.5rem 0.375rem;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      font-size: 0.7rem;
+      color: var(--text2);
+      background: var(--surface2);
+    }
+
+    .schedule-grid th.nurse-col {
+      text-align: left;
+      padding-left: 0.75rem;
+      min-width: 160px;
+      position: sticky;
+      left: 0;
+      background: var(--surface2);
+      z-index: 2;
+    }
+
+    .schedule-grid td {
+      padding: 0.375rem 0.25rem;
+      text-align: center;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+      min-width: 50px;
+    }
+
+    .schedule-grid td.nurse-name {
+      text-align: left;
+      padding-left: 0.75rem;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      position: sticky;
+      left: 0;
+      background: var(--surface);
+      z-index: 1;
+      cursor: default;
+    }
+
+    .schedule-grid td.nurse-name:hover {
+      background: var(--surface);
+    }
+
+    .schedule-grid tr:nth-child(even) td.nurse-name {
+      background: var(--surface2);
+    }
+
+    .schedule-grid tr:nth-child(even) td.nurse-name:hover {
+      background: var(--surface2);
+    }
+
+    .cell-M {
+      background: var(--manha);
+      color: var(--manha-text);
+      font-weight: 600;
+    }
+
+    .cell-T {
+      background: var(--tarde);
+      color: var(--tarde-text);
+      font-weight: 600;
+    }
+
+    .cell-N {
+      background: var(--noite);
+      color: var(--noite-text);
+      font-weight: 600;
+    }
+
+    .cell-FO {
+      background: var(--folga);
+      color: var(--folga-text);
+      font-weight: 600;
+    }
+
+    .cell-FE {
+      background: var(--ferias);
+      color: var(--ferias-text);
+      font-weight: 600;
+    }
+
+    .cell-F {
+      background: var(--fds);
+      color: var(--fds-text);
+      font-weight: 600;
+    }
+
+    .cell-D {
+      background: var(--fds);
+      color: var(--fds-text);
+      font-weight: 600;
+    }
+
+    .schedule-grid td:hover:not(.nurse-name) {
+      opacity: 0.75;
+      transform: scale(1.05);
+    }
+
+    .weekend-col {
+      background: rgba(88, 166, 255, 0.05) !important;
+    }
+
+    .sunday-col {
+      background: rgba(248, 129, 102, 0.05) !important;
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text2);
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+    }
+
+    .stat-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .stat-sub {
+      font-size: 0.7rem;
+      color: var(--text2);
+      margin-top: 0.125rem;
+    }
+
+    /* ALERTS */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .alert-warning {
+      background: rgba(227, 179, 65, 0.1);
+      border: 1px solid rgba(227, 179, 65, 0.3);
+      color: var(--accent4);
+    }
+
+    .alert-success {
+      background: rgba(46, 160, 67, 0.1);
+      border: 1px solid rgba(46, 160, 67, 0.3);
+      color: var(--accent);
+    }
+
+    .alert-info {
+      background: rgba(56, 139, 253, 0.1);
+      border: 1px solid rgba(56, 139, 253, 0.3);
+      color: var(--accent2);
+    }
+
+    /* LEGEND */
+    .legend {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+
+    .legend-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 700;
+    }
+
+    /* CONTEXT MENU */
+    .ctx-menu {
+      position: fixed;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.375rem;
+      z-index: 1000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      display: none;
+      min-width: 160px;
+      user-select: none;
+    }
+
+    .ctx-menu.show {
+      display: block;
+    }
+
+    /* HISTÓRICO PANEL */
+    .historico-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 600;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .historico-overlay.show {
+      display: flex;
+    }
+
+    .historico-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      width: 580px;
+      max-width: 95vw;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .historico-panel h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hist-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .hist-info {
+      flex: 1;
+    }
+
+    .hist-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .hist-meta {
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+
+    .hist-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .cell-FERIADO {
+      background: rgba(247, 129, 102, 0.2);
+      color: var(--accent3);
+      font-weight: 700;
+    }
+
+    .feriado-header {
+      color: var(--accent3) !important;
+    }
+
+    .ctx-item {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8125rem;
+      transition: background 0.15s;
+    }
+
+    .ctx-item:hover {
+      background: var(--surface2);
+    }
+
+    .ctx-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    /* TOOLTIP */
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: var(--text);
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      width: 480px;
+      max-width: 95vw;
+    }
+
+    .modal h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.625rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+
+    .tag button {
+      background: none;
+      border: none;
+      color: var(--text2);
+      cursor: pointer;
+      font-size: 0.875rem;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .tag button:hover {
+      color: var(--accent3);
+    }
+
+    /* COVERAGE INDICATOR */
+    .coverage-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 0.375rem;
+      overflow: hidden;
+    }
+
+    .coverage-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    .fill-ok {
+      background: var(--accent);
+    }
+
+    .fill-warn {
+      background: var(--accent4);
+    }
+
+    .fill-bad {
+      background: var(--accent3);
+    }
+
+    /* DIVIDER */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.25rem 0;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text2);
+    }
+
+    .empty-state .icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      font-size: 0.875rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .main {
+        padding: 1rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      header {
+        padding: 0 1rem;
+      }
+
+      .tabs {
+        padding: 0 1rem;
+        overflow-x: auto;
+      }
+    }
+
+    .month-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .month-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      text-transform: capitalize;
+    }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.125rem;
+      margin-bottom: 1rem;
+    }
+
+    select[multiple] {
+      height: auto;
+      min-height: 80px;
+    }
+
+    .nurse-count-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.125rem 0.625rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+
+    .cobertura-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+
+    .cobertura-table th,
+    .cobertura-table td {
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .cobertura-table th {
+      background: var(--surface2);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .cob-ok {
+      color: var(--accent);
+    }
+
+    .cob-warn {
+      color: var(--accent4);
+    }
+
+    .cob-bad {
+      color: var(--accent3);
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">🏥</div>
-    <div>
-      <h1>ESCALA ENFERMEIROS (TESTE)</h1>
-      <span>Sistema de Distribuição de Escalas</span>
-    </div>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-secondary btn-sm tooltip" data-tip="Histórico de escalas salvas" onclick="abrirHistorico()" style="font-size:1rem; padding:0.5rem 0.75rem;">🗂️</button>
-    <button class="btn btn-secondary btn-sm" onclick="exportExcel()">📊 Exportar CSV</button>
-    <button class="btn btn-primary btn-sm" onclick="gerarEscala()">⚡ Gerar Escala</button>
-  </div>
-</header>
-
-<div class="tabs">
-  <div class="tab active" onclick="goTab('enfermeiros')">👥 Enfermeiros</div>
-  <div class="tab" onclick="goTab('configuracoes')">⚙️ Configurações</div>
-  <div class="tab" onclick="goTab('escala')">📅 Escala</div>
-  <div class="tab" onclick="goTab('relatorio')">📊 Relatório</div>
-</div>
-
-<div class="main">
-
-  <!-- =================== ENFERMEIROS =================== -->
-  <div class="page active" id="page-enfermeiros">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">
-          ➕ Adicionar Enfermeiro
-        </div>
-      </div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nome completo</label>
-          <input type="text" id="nomeEnf" placeholder="Ex: Ana Paula Silva">
-        </div>
-        <div class="form-group">
-          <label>COREN</label>
-          <input type="text" id="corenEnf" placeholder="Ex: SP-123456">
-        </div>
-        <div class="form-group">
-          <label>Turno preferencial</label>
-          <select id="turnoEnf">
-            <option value="M">☀️ Manhã (6h - dias úteis / 10h FDS)</option>
-            <option value="T">🌤️ Tarde (6h - dias úteis / 10h FDS)</option>
-            <option value="N">🌙 Noite (12x36h)</option>
-            <option value="FL">🔄 Flexível</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Fim de semana</label>
-          <select id="fdsEnf">
-            <option value="S">Sábado (10h)</option>
-            <option value="D">Domingo (10h)</option>
-            <option value="A">Alternado</option>
-          </select>
-        </div>
-      </div>
-      <div style="margin-top:1rem; display:flex; gap:0.75rem;">
-        <button class="btn btn-primary" onclick="adicionarEnfermeiro()">➕ Adicionar</button>
-        <button class="btn btn-secondary" onclick="adicionarExemplos()">🧪 Carregar exemplos</button>
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🏥</div>
+      <div>
+        <h1>ESCALA DE ENFERMEIROS</h1>
+        <span>Sistema de Distribuição de Escalas</span>
       </div>
     </div>
-
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">👥 Equipe <span class="nurse-count-badge" id="nurseCount">0</span></div>
-      </div>
-      <div id="tabelaEnfermeiros">
-        <div class="empty-state">
-          <div class="icon">👩‍⚕️</div>
-          <h3>Nenhum enfermeiro cadastrado</h3>
-          <p>Adicione enfermeiros ou carregue os exemplos</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" id="folgasCard">
-      <div class="card-title" style="margin-bottom:1.25rem;">📋 Folgas e Férias</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Enfermeiro</label>
-          <select id="folgaNurse"></select>
-        </div>
-        <div class="form-group">
-          <label>Tipo</label>
-          <select id="folgaTipo">
-            <option value="FO">🟢 Folga</option>
-            <option value="FE">🔴 Férias</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Data início</label>
-          <input type="date" id="folgaInicio">
-        </div>
-        <div class="form-group">
-          <label>Data fim</label>
-          <input type="date" id="folgaFim">
-        </div>
-      </div>
-      <button class="btn btn-secondary" style="margin-top:1rem;" onclick="adicionarFolga()">➕ Registrar</button>
-
-      <div id="listaFolgas" style="margin-top:1.25rem;"></div>
-    </div>
-  </div>
-
-  <!-- =================== CONFIGURAÇÕES =================== -->
-  <div class="page" id="page-configuracoes">
-    <div class="card">
-      <div class="card-title" style="margin-bottom:1.25rem;">📅 Período da Escala</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Mês</label>
-          <select id="cfgMes">
-            <option value="0">Janeiro</option><option value="1">Fevereiro</option>
-            <option value="2">Março</option><option value="3">Abril</option>
-            <option value="4">Maio</option><option value="5">Junho</option>
-            <option value="6">Julho</option><option value="7">Agosto</option>
-            <option value="8">Setembro</option><option value="9">Outubro</option>
-            <option value="10">Novembro</option><option value="11">Dezembro</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Ano</label>
-          <input type="number" id="cfgAno" value="2025" min="2024" max="2030">
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title" style="margin-bottom:1.25rem;">🔢 Cobertura Mínima por Turno</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>☀️ Manhã — dias úteis (mín. enfermeiros)</label>
-          <input type="number" id="cfgMinManha" value="2" min="1" max="20">
-        </div>
-        <div class="form-group">
-          <label>🌤️ Tarde — dias úteis (mín. enfermeiros)</label>
-          <input type="number" id="cfgMinTarde" value="2" min="1" max="20">
-        </div>
-        <div class="form-group">
-          <label>🌙 Noite — todos os dias (mín. enfermeiros)</label>
-          <input type="number" id="cfgMinNoite" value="1" min="1" max="20">
-        </div>
-        <div class="form-group">
-          <label>🏥 Fim de semana por turno (mín.)</label>
-          <input type="number" id="cfgMinFds" value="1" min="1" max="20">
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title" style="margin-bottom:1.25rem;">⏰ Carga Horária</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Horas diárias (dias úteis)</label>
-          <input type="number" id="cfgHorasDU" value="6" readonly style="opacity:0.6">
-        </div>
-        <div class="form-group">
-          <label>Horas fim de semana</label>
-          <input type="number" id="cfgHorasFDS" value="10" readonly style="opacity:0.6">
-        </div>
-        <div class="form-group">
-          <label>Turno noturno</label>
-          <input type="text" value="12h trabalho / 36h folga" readonly style="opacity:0.6">
-        </div>
-      </div>
-      <p style="font-size:0.8rem; color: var(--text2); margin-top:0.75rem;">
-        ℹ️ Configuração conforme sua escala: 6h dias úteis, 10h fim de semana (sábado alternado / domingo alternado), noite 12x36h.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="card-title" style="margin-bottom:1.25rem;">🔴 Feriados do Mês</div>
-      <div style="display:flex; gap:0.75rem; align-items:flex-end;">
-        <div class="form-group" style="flex:1; margin-bottom:0;">
-          <label>Data do feriado</label>
-          <input type="date" id="feriadoData">
-        </div>
-        <div class="form-group" style="flex:2; margin-bottom:0;">
-          <label>Descrição</label>
-          <input type="text" id="feriadoDesc" placeholder="Ex: Corpus Christi">
-        </div>
-        <button class="btn btn-secondary" onclick="adicionarFeriado()">➕ Adicionar</button>
-      </div>
-      <div id="listaFeriados" class="tag-list" style="margin-top:1rem;"></div>
-    </div>
-
-    <button class="btn btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
-  </div>
-
-  <!-- =================== ESCALA =================== -->
-  <div class="page" id="page-escala">
-    <div class="month-header">
-      <div class="month-title" id="escalaTitle">Escala — </div>
-      <button class="btn btn-primary btn-sm" onclick="gerarEscala()">⚡ Gerar / Regerar Escala</button>
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm tooltip" data-tip="Histórico de escalas salvas" onclick="abrirHistorico()"
+        style="font-size:1rem; padding:0.5rem 0.75rem;">🗂️</button>
+      <button class="btn btn-secondary btn-sm"
+        onclick="localStorage.clear(); alert('Escalas e Enfermeiros anteriormente adicionados serão apagados!'); location.reload();">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+        </svg>Limpar Dados</button>
       <button class="btn btn-secondary btn-sm" onclick="exportExcel()">📊 Exportar CSV</button>
+      <button class="btn btn-primary btn-sm" onclick="gerarEscala()">⚡ Gerar Escala</button>
     </div>
+  </header>
 
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot cell-M">M</div> Manhã</div>
-      <div class="legend-item"><div class="legend-dot cell-T">T</div> Tarde</div>
-      <div class="legend-item"><div class="legend-dot cell-N">N</div> Noite</div>
-      <div class="legend-item"><div class="legend-dot cell-F">S</div> Sábado 10h</div>
-      <div class="legend-item"><div class="legend-dot cell-D">D</div> Domingo 10h</div>
-      <div class="legend-item"><div class="legend-dot cell-FO">F</div> Folga</div>
-      <div class="legend-item"><div class="legend-dot cell-FE">V</div> Férias</div>
-      <div class="legend-item"><div class="legend-dot cell-FERIADO">🔴</div> Feriado</div>
-      <p style="font-size:0.7rem; color:var(--text2); margin-left:auto;">Clique em qualquer célula para editar</p>
-    </div>
+  <div class="tabs">
+    <div class="tab active" onclick="goTab('enfermeiros')">👥 Enfermeiros</div>
+    <div class="tab" onclick="goTab('configuracoes')">⚙️ Configurações</div>
+    <div class="tab" onclick="goTab('escala')">📅 Escala</div>
+    <div class="tab" onclick="goTab('relatorio')">📊 Relatório</div>
+  </div>
 
-    <div class="card" style="padding:1rem;">
-      <div class="schedule-container">
-        <div id="escalaGrid">
+  <div class="main">
+
+    <!-- =================== ENFERMEIROS =================== -->
+    <div class="page active" id="page-enfermeiros">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            ➕ Adicionar Enfermeiro
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nome completo</label>
+            <input type="text" id="nomeEnf" placeholder="Ex: Ana Paula Silva">
+          </div>
+          <div class="form-group">
+            <label>COREN</label>
+            <input type="text" id="corenEnf" placeholder="Ex: SP-123456">
+          </div>
+          <div class="form-group">
+            <label>Turno preferencial</label>
+            <select id="turnoEnf">
+              <option value="M">☀️ Manhã (6h - dias úteis / 10h FDS)</option>
+              <option value="T">🌤️ Tarde (6h - dias úteis / 10h FDS)</option>
+              <option value="N">🌙 Noite (12x36h)</option>
+              <option value="FL">🔄 Flexível</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Fim de semana</label>
+            <select id="fdsEnf">
+              <option value="S">Sábado (10h)</option>
+              <option value="D">Domingo (10h)</option>
+              <option value="A">Alternado</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:1rem; display:flex; gap:0.75rem;">
+          <button class="btn btn-primary" onclick="adicionarEnfermeiro()">➕ Adicionar</button>
+          <button class="btn btn-secondary" onclick="adicionarExemplos()">🧪 Carregar exemplos</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">👥 Equipe <span class="nurse-count-badge" id="nurseCount">0</span></div>
+        </div>
+        <div id="tabelaEnfermeiros">
           <div class="empty-state">
-            <div class="icon">📅</div>
-            <h3>Escala não gerada</h3>
-            <p>Clique em "Gerar Escala" para distribuir automaticamente</p>
+            <div class="icon">👩‍⚕️</div>
+            <h3>Nenhum enfermeiro cadastrado</h3>
+            <p>Adicione enfermeiros ou carregue os exemplos</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="folgasCard">
+        <div class="card-title" style="margin-bottom:1.25rem;">📋 Folgas e Férias</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Enfermeiro</label>
+            <select id="folgaNurse"></select>
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="folgaTipo">
+              <option value="FO">🟢 Folga</option>
+              <option value="FE">🔴 Férias</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Data início</label>
+            <input type="date" id="folgaInicio">
+          </div>
+          <div class="form-group">
+            <label>Data fim</label>
+            <input type="date" id="folgaFim">
+          </div>
+        </div>
+        <button class="btn btn-secondary" style="margin-top:1rem;" onclick="adicionarFolga()">➕ Registrar</button>
+
+        <div id="listaFolgas" style="margin-top:1.25rem;"></div>
+      </div>
+    </div>
+
+    <!-- =================== CONFIGURAÇÕES =================== -->
+    <div class="page" id="page-configuracoes">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:1.25rem;">📅 Período da Escala</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mês</label>
+            <select id="cfgMes">
+              <option value="0">Janeiro</option>
+              <option value="1">Fevereiro</option>
+              <option value="2">Março</option>
+              <option value="3">Abril</option>
+              <option value="4">Maio</option>
+              <option value="5">Junho</option>
+              <option value="6">Julho</option>
+              <option value="7">Agosto</option>
+              <option value="8">Setembro</option>
+              <option value="9">Outubro</option>
+              <option value="10">Novembro</option>
+              <option value="11">Dezembro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ano</label>
+            <input type="number" id="cfgAno" value="2025" min="2024" max="2030">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:1.25rem;">🔢 Cobertura Mínima por Turno</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>☀️ Manhã — dias úteis (mín. enfermeiros)</label>
+            <input type="number" id="cfgMinManha" value="2" min="1" max="20">
+          </div>
+          <div class="form-group">
+            <label>🌤️ Tarde — dias úteis (mín. enfermeiros)</label>
+            <input type="number" id="cfgMinTarde" value="2" min="1" max="20">
+          </div>
+          <div class="form-group">
+            <label>🌙 Noite — todos os dias (mín. enfermeiros)</label>
+            <input type="number" id="cfgMinNoite" value="1" min="1" max="20">
+          </div>
+          <div class="form-group">
+            <label>🏥 Fim de semana por turno (mín.)</label>
+            <input type="number" id="cfgMinFds" value="1" min="1" max="20">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:1.25rem;">⏰ Carga Horária</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Horas diárias (dias úteis)</label>
+            <input type="number" id="cfgHorasDU" value="6" readonly style="opacity:0.6">
+          </div>
+          <div class="form-group">
+            <label>Horas fim de semana</label>
+            <input type="number" id="cfgHorasFDS" value="10" readonly style="opacity:0.6">
+          </div>
+          <div class="form-group">
+            <label>Turno noturno</label>
+            <input type="text" value="12h trabalho / 36h folga" readonly style="opacity:0.6">
+          </div>
+        </div>
+        <p style="font-size:0.8rem; color: var(--text2); margin-top:0.75rem;">
+          ℹ️ Configuração conforme sua escala: 6h dias úteis, 10h fim de semana (sábado alternado / domingo alternado),
+          noite 12x36h.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:1.25rem;">🔴 Feriados do Mês</div>
+        <div style="display:flex; gap:0.75rem; align-items:flex-end;">
+          <div class="form-group" style="flex:1; margin-bottom:0;">
+            <label>Data do feriado</label>
+            <input type="date" id="feriadoData">
+          </div>
+          <div class="form-group" style="flex:2; margin-bottom:0;">
+            <label>Descrição</label>
+            <input type="text" id="feriadoDesc" placeholder="Ex: Corpus Christi">
+          </div>
+          <button class="btn btn-secondary" onclick="adicionarFeriado()">➕ Adicionar</button>
+        </div>
+        <div id="listaFeriados" class="tag-list" style="margin-top:1rem;"></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
+    </div>
+
+    <!-- =================== ESCALA =================== -->
+    <div class="page" id="page-escala">
+      <div class="month-header">
+        <div class="month-title" id="escalaTitle">Escala — </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot cell-M">M</div> Manhã
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot cell-T">T</div> Tarde
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot cell-N">N</div> Noite
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot cell-F">S</div> Sábado 10h
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot cell-D">D</div> Domingo 10h
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot cell-FO">F</div> Folga
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot cell-FE">V</div> Férias
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot cell-FERIADO">🔴</div> Feriado
+        </div>
+        <p style="font-size:0.7rem; color:var(--text2); margin-left:auto;">Clique em qualquer célula para editar</p>
+      </div>
+
+      <div class="card" style="padding:1rem;">
+        <div class="schedule-container">
+          <div id="escalaGrid">
+            <div class="empty-state">
+              <div class="icon">📅</div>
+              <h3>Escala não gerada</h3>
+              <p>Clique em "Gerar Escala" para distribuir automaticamente</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- =================== RELATÓRIO =================== -->
+    <div class="page" id="page-relatorio">
+      <div id="relatorioContent">
+        <div class="empty-state">
+          <div class="icon">📊</div>
+          <h3>Gere a escala primeiro</h3>
+          <p>O relatório aparecerá automaticamente após gerar a escala</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- =================== RELATÓRIO =================== -->
-  <div class="page" id="page-relatorio">
-    <div id="relatorioContent">
-      <div class="empty-state">
-        <div class="icon">📊</div>
-        <h3>Gere a escala primeiro</h3>
-        <p>O relatório aparecerá automaticamente após gerar a escala</p>
+  <!-- HISTÓRICO MODAL -->
+  <div class="historico-overlay" id="historicoOverlay" onclick="fecharHistorico(event)">
+    <div class="historico-panel">
+      <h2>🗂️ Histórico de Escalas <button class="btn btn-secondary btn-sm"
+          onclick="document.getElementById('historicoOverlay').classList.remove('show')">✕ Fechar</button></h2>
+      <div id="historicoList"></div>
+    </div>
+  </div>
+
+  <!-- CONTEXT MENU -->
+  <div class="ctx-menu" id="ctxMenu">
+    <div class="ctx-item" onmousedown="setCellValue('M')">
+      <div class="ctx-dot cell-M"></div> Manhã
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('T')">
+      <div class="ctx-dot cell-T"></div> Tarde
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('N')">
+      <div class="ctx-dot cell-N"></div> Noite
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('F')">
+      <div class="ctx-dot cell-F"></div> Sábado 10h
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('D')">
+      <div class="ctx-dot cell-D"></div> Domingo 10h
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('FO')">
+      <div class="ctx-dot cell-FO"></div> Folga
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('FE')">
+      <div class="ctx-dot cell-FE"></div> Férias
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('FERIADO')">
+      <div class="ctx-dot cell-FERIADO"></div> Feriado
+    </div>
+    <div class="ctx-item" onmousedown="setCellValue('')">
+      <div class="ctx-dot" style="background:var(--border)"></div> Limpar
+    </div>
+  </div>
+
+  <!-- MODAL ADD NURSE SUCCESS -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2 id="modalTitle">✅ Enfermeiro adicionado</h2>
+      <p id="modalMsg" style="color:var(--text2);">Cadastro realizado com sucesso. Gere a escala para incluir este
+        profissional.</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary"
+          onclick="document.getElementById('modalOverlay').classList.remove('show')">OK</button>
       </div>
     </div>
   </div>
 
-</div>
+  <script>
+    // ============================================================
+    //  STATE
+    // ============================================================
+    let enfermeiros = [];
+    let folgas = [];
+    let feriados = [];
+    let escala = {}; // { nurseId: { day: 'M'|'T'|'N'|'F'|'D'|'FO'|'FE' } }
+    let config = {
+      mes: new Date().getMonth(),
+      ano: new Date().getFullYear(),
+      minManha: 2, minTarde: 2, minNoite: 1, minFds: 1
+    };
+    let activeCell = null;
+    let idCounter = 1;
 
-<!-- HISTÓRICO MODAL -->
-<div class="historico-overlay" id="historicoOverlay" onclick="fecharHistorico(event)">
-  <div class="historico-panel">
-    <h2>🗂️ Histórico de Escalas <button class="btn btn-secondary btn-sm" onclick="document.getElementById('historicoOverlay').classList.remove('show')">✕ Fechar</button></h2>
-    <div id="historicoList"></div>
-  </div>
-</div>
+    const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-<!-- CONTEXT MENU -->
-<div class="ctx-menu" id="ctxMenu">
-  <div class="ctx-item" onmousedown="setCellValue('M')"><div class="ctx-dot cell-M"></div> Manhã</div>
-  <div class="ctx-item" onmousedown="setCellValue('T')"><div class="ctx-dot cell-T"></div> Tarde</div>
-  <div class="ctx-item" onmousedown="setCellValue('N')"><div class="ctx-dot cell-N"></div> Noite</div>
-  <div class="ctx-item" onmousedown="setCellValue('F')"><div class="ctx-dot cell-F"></div> Sábado 10h</div>
-  <div class="ctx-item" onmousedown="setCellValue('D')"><div class="ctx-dot cell-D"></div> Domingo 10h</div>
-  <div class="ctx-item" onmousedown="setCellValue('FO')"><div class="ctx-dot cell-FO"></div> Folga</div>
-  <div class="ctx-item" onmousedown="setCellValue('FE')"><div class="ctx-dot cell-FE"></div> Férias</div>
-  <div class="ctx-item" onmousedown="setCellValue('FERIADO')"><div class="ctx-dot cell-FERIADO"></div> Feriado</div>
-  <div class="ctx-item" onmousedown="setCellValue('')"><div class="ctx-dot" style="background:var(--border)"></div> Limpar</div>
-</div>
+    // ============================================================
+    //  TABS
+    // ============================================================
+    function goTab(tab) {
+      document.querySelectorAll('.tab').forEach((t, i) => t.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const tabs = ['enfermeiros', 'configuracoes', 'escala', 'relatorio'];
+      const idx = tabs.indexOf(tab);
+      document.querySelectorAll('.tab')[idx].classList.add('active');
+      document.getElementById('page-' + tab).classList.add('active');
+    }
 
-<!-- MODAL ADD NURSE SUCCESS -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h2 id="modalTitle">✅ Enfermeiro adicionado</h2>
-    <p id="modalMsg" style="color:var(--text2);">Cadastro realizado com sucesso. Gere a escala para incluir este profissional.</p>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="document.getElementById('modalOverlay').classList.remove('show')">OK</button>
-    </div>
-  </div>
-</div>
+    // ============================================================
+    //  LOCAL STORAGE — HISTÓRICO DE ESCALAS
+    // ============================================================
+    const LS_HISTORICO = 'escala_historico_v2';
+    const LS_ATUAL = 'escala_atual_v2';
 
-<script>
-// ============================================================
-//  STATE
-// ============================================================
-let enfermeiros = [];
-let folgas = [];
-let feriados = [];
-let escala = {}; // { nurseId: { day: 'M'|'T'|'N'|'F'|'D'|'FO'|'FE' } }
-let config = {
-  mes: new Date().getMonth(),
-  ano: new Date().getFullYear(),
-  minManha: 2, minTarde: 2, minNoite: 1, minFds: 1
-};
-let activeCell = null;
-let idCounter = 1;
+    function salvarNoLocalStorage() {
+      const data = { enfermeiros, folgas, feriados, escala, config, idCounter, dataGravacao: new Date().toISOString() };
+      localStorage.setItem(LS_ATUAL, JSON.stringify(data));
+    }
 
-const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    function carregarDoLocalStorage() {
+      const data = localStorage.getItem(LS_ATUAL);
+      if (data) {
+        const parsed = JSON.parse(data);
+        enfermeiros = parsed.enfermeiros || [];
+        folgas = parsed.folgas || [];
+        feriados = parsed.feriados || [];
+        escala = parsed.escala || {};
+        config = parsed.config || config;
+        idCounter = parsed.idCounter || 1;
+        document.getElementById('cfgMes').value = config.mes;
+        document.getElementById('cfgAno').value = config.ano;
+        document.getElementById('cfgMinManha').value = config.minManha;
+        document.getElementById('cfgMinTarde').value = config.minTarde;
+        document.getElementById('cfgMinNoite').value = config.minNoite;
+        document.getElementById('cfgMinFds').value = config.minFds;
+        renderTabelaEnfermeiros();
+        renderListaFolgas();
+        renderFeriados();
+        updateFolgaSelect();
+        if (Object.keys(escala).length > 0) { renderEscala(); renderRelatorio(); }
+      }
+    }
 
-// ============================================================
-//  TABS
-// ============================================================
-function goTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const tabs = ['enfermeiros','configuracoes','escala','relatorio'];
-  const idx = tabs.indexOf(tab);
-  document.querySelectorAll('.tab')[idx].classList.add('active');
-  document.getElementById('page-' + tab).classList.add('active');
-}
+    function salvarEscalaNoHistorico() {
+      if (!Object.keys(escala).length) return;
+      const historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
+      const entrada = {
+        id: Date.now(),
+        dataGravacao: new Date().toISOString(),
+        label: `${MESES[config.mes]} ${config.ano}`,
+        config: JSON.parse(JSON.stringify(config)),
+        enfermeiros: JSON.parse(JSON.stringify(enfermeiros)),
+        folgas: JSON.parse(JSON.stringify(folgas)),
+        feriados: JSON.parse(JSON.stringify(feriados)),
+        escala: JSON.parse(JSON.stringify(escala)),
+        idCounter
+      };
+      // Substituir se já existe o mesmo mês/ano
+      const idx = historico.findIndex(h => h.config.mes === config.mes && h.config.ano === config.ano);
+      if (idx >= 0) historico[idx] = entrada;
+      else historico.unshift(entrada);
+      // Manter no máximo 20 escalas
+      if (historico.length > 20) historico.length = 20;
+      localStorage.setItem(LS_HISTORICO, JSON.stringify(historico));
+    }
 
-// ============================================================
-//  LOCAL STORAGE — HISTÓRICO DE ESCALAS
-// ============================================================
-const LS_HISTORICO = 'escala_historico_v2';
-const LS_ATUAL = 'escala_atual_v2';
-
-function salvarNoLocalStorage() {
-  const data = { enfermeiros, folgas, feriados, escala, config, idCounter, dataGravacao: new Date().toISOString() };
-  localStorage.setItem(LS_ATUAL, JSON.stringify(data));
-}
-
-function carregarDoLocalStorage() {
-  const data = localStorage.getItem(LS_ATUAL);
-  if (data) {
-    const parsed = JSON.parse(data);
-    enfermeiros = parsed.enfermeiros || [];
-    folgas = parsed.folgas || [];
-    feriados = parsed.feriados || [];
-    escala = parsed.escala || {};
-    config = parsed.config || config;
-    idCounter = parsed.idCounter || 1;
-    document.getElementById('cfgMes').value = config.mes;
-    document.getElementById('cfgAno').value = config.ano;
-    document.getElementById('cfgMinManha').value = config.minManha;
-    document.getElementById('cfgMinTarde').value = config.minTarde;
-    document.getElementById('cfgMinNoite').value = config.minNoite;
-    document.getElementById('cfgMinFds').value = config.minFds;
-    renderTabelaEnfermeiros();
-    renderListaFolgas();
-    renderFeriados();
-    updateFolgaSelect();
-    if (Object.keys(escala).length > 0) { renderEscala(); renderRelatorio(); }
-  }
-}
-
-function salvarEscalaNoHistorico() {
-  if (!Object.keys(escala).length) return;
-  const historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
-  const entrada = {
-    id: Date.now(),
-    dataGravacao: new Date().toISOString(),
-    label: `${MESES[config.mes]} ${config.ano}`,
-    config: JSON.parse(JSON.stringify(config)),
-    enfermeiros: JSON.parse(JSON.stringify(enfermeiros)),
-    folgas: JSON.parse(JSON.stringify(folgas)),
-    feriados: JSON.parse(JSON.stringify(feriados)),
-    escala: JSON.parse(JSON.stringify(escala)),
-    idCounter
-  };
-  // Substituir se já existe o mesmo mês/ano
-  const idx = historico.findIndex(h => h.config.mes === config.mes && h.config.ano === config.ano);
-  if (idx >= 0) historico[idx] = entrada;
-  else historico.unshift(entrada);
-  // Manter no máximo 20 escalas
-  if (historico.length > 20) historico.length = 20;
-  localStorage.setItem(LS_HISTORICO, JSON.stringify(historico));
-}
-
-function abrirHistorico() {
-  const historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
-  const div = document.getElementById('historicoList');
-  if (!historico.length) {
-    div.innerHTML = `<div class="empty-state"><div class="icon">🗂️</div><h3>Nenhuma escala salva</h3><p>Gere e salve uma escala para ela aparecer aqui.</p></div>`;
-  } else {
-    div.innerHTML = historico.map(h => {
-      const data = new Date(h.dataGravacao);
-      const dataFmt = data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
-      return `
+    function abrirHistorico() {
+      const historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
+      const div = document.getElementById('historicoList');
+      if (!historico.length) {
+        div.innerHTML = `<div class="empty-state"><div class="icon">🗂️</div><h3>Nenhuma escala salva</h3><p>Gere e salve uma escala para ela aparecer aqui.</p></div>`;
+      } else {
+        div.innerHTML = historico.map(h => {
+          const data = new Date(h.dataGravacao);
+          const dataFmt = data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          return `
       <div class="hist-item">
         <div class="hist-info">
           <div class="hist-title">📅 ${h.label}</div>
@@ -1063,103 +1334,103 @@ function abrirHistorico() {
           <button class="btn btn-danger btn-sm" onclick="excluirHistorico(${h.id})">🗑️</button>
         </div>
       </div>`;
-    }).join('');
-  }
-  document.getElementById('historicoOverlay').classList.add('show');
-}
+        }).join('');
+      }
+      document.getElementById('historicoOverlay').classList.add('show');
+    }
 
-function fecharHistorico(e) {
-  if (e.target === document.getElementById('historicoOverlay'))
-    document.getElementById('historicoOverlay').classList.remove('show');
-}
+    function fecharHistorico(e) {
+      if (e.target === document.getElementById('historicoOverlay'))
+        document.getElementById('historicoOverlay').classList.remove('show');
+    }
 
-function restaurarEscala(id) {
-  const historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
-  const h = historico.find(x => x.id === id);
-  if (!h) return;
-  enfermeiros = h.enfermeiros;
-  folgas = h.folgas;
-  feriados = h.feriados;
-  escala = h.escala;
-  config = h.config;
-  idCounter = h.idCounter;
-  document.getElementById('cfgMes').value = config.mes;
-  document.getElementById('cfgAno').value = config.ano;
-  document.getElementById('cfgMinManha').value = config.minManha;
-  document.getElementById('cfgMinTarde').value = config.minTarde;
-  document.getElementById('cfgMinNoite').value = config.minNoite;
-  document.getElementById('cfgMinFds').value = config.minFds;
-  salvarNoLocalStorage();
-  renderTabelaEnfermeiros();
-  renderListaFolgas();
-  renderFeriados();
-  updateFolgaSelect();
-  renderEscala();
-  renderRelatorio();
-  document.getElementById('historicoOverlay').classList.remove('show');
-  goTab('escala');
-}
+    function restaurarEscala(id) {
+      const historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
+      const h = historico.find(x => x.id === id);
+      if (!h) return;
+      enfermeiros = h.enfermeiros;
+      folgas = h.folgas;
+      feriados = h.feriados;
+      escala = h.escala;
+      config = h.config;
+      idCounter = h.idCounter;
+      document.getElementById('cfgMes').value = config.mes;
+      document.getElementById('cfgAno').value = config.ano;
+      document.getElementById('cfgMinManha').value = config.minManha;
+      document.getElementById('cfgMinTarde').value = config.minTarde;
+      document.getElementById('cfgMinNoite').value = config.minNoite;
+      document.getElementById('cfgMinFds').value = config.minFds;
+      salvarNoLocalStorage();
+      renderTabelaEnfermeiros();
+      renderListaFolgas();
+      renderFeriados();
+      updateFolgaSelect();
+      renderEscala();
+      renderRelatorio();
+      document.getElementById('historicoOverlay').classList.remove('show');
+      goTab('escala');
+    }
 
-function excluirHistorico(id) {
-  let historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
-  historico = historico.filter(h => h.id !== id);
-  localStorage.setItem(LS_HISTORICO, JSON.stringify(historico));
-  abrirHistorico();
-}
+    function excluirHistorico(id) {
+      let historico = JSON.parse(localStorage.getItem(LS_HISTORICO) || '[]');
+      historico = historico.filter(h => h.id !== id);
+      localStorage.setItem(LS_HISTORICO, JSON.stringify(historico));
+      abrirHistorico();
+    }
 
-// ============================================================
-//  ENFERMEIROS
-// ============================================================
-function adicionarEnfermeiro() {
-  const nome = document.getElementById('nomeEnf').value.trim();
-  const coren = document.getElementById('corenEnf').value.trim();
-  const turno = document.getElementById('turnoEnf').value;
-  const fds = document.getElementById('fdsEnf').value;
-  if (!nome) { alert('Informe o nome do enfermeiro.'); return; }
-  enfermeiros.push({ id: idCounter++, nome, coren, turno, fds });
-  document.getElementById('nomeEnf').value = '';
-  document.getElementById('corenEnf').value = '';
-  renderTabelaEnfermeiros();
-  updateFolgaSelect();
-  salvarNoLocalStorage();
-  document.getElementById('modalOverlay').classList.add('show');
-}
+    // ============================================================
+    //  ENFERMEIROS
+    // ============================================================
+    function adicionarEnfermeiro() {
+      const nome = document.getElementById('nomeEnf').value.trim();
+      const coren = document.getElementById('corenEnf').value.trim();
+      const turno = document.getElementById('turnoEnf').value;
+      const fds = document.getElementById('fdsEnf').value;
+      if (!nome) { alert('Informe o nome do enfermeiro.'); return; }
+      enfermeiros.push({ id: idCounter++, nome, coren, turno, fds });
+      document.getElementById('nomeEnf').value = '';
+      document.getElementById('corenEnf').value = '';
+      renderTabelaEnfermeiros();
+      updateFolgaSelect();
+      salvarNoLocalStorage();
+      document.getElementById('modalOverlay').classList.add('show');
+    }
 
-function adicionarExemplos() {
-  const exemplos = [
-    { nome: 'Ana Paula Silva',   coren: 'SP-112233', turno: 'M',  fds: 'S' },
-    { nome: 'Bruno Costa',       coren: 'SP-223344', turno: 'M',  fds: 'D' },
-    { nome: 'Carla Mendes',      coren: 'SP-334455', turno: 'T',  fds: 'S' },
-    { nome: 'Diego Ferreira',    coren: 'SP-445566', turno: 'T',  fds: 'D' },
-    { nome: 'Elaine Rodrigues',  coren: 'SP-556677', turno: 'N',  fds: 'A' },
-    { nome: 'Fábio Nascimento',  coren: 'SP-667788', turno: 'N',  fds: 'A' },
-    { nome: 'Gisele Alves',      coren: 'SP-778899', turno: 'FL', fds: 'A' },
-  ];
-  exemplos.forEach(e => enfermeiros.push({ id: idCounter++, ...e }));
-  renderTabelaEnfermeiros();
-  updateFolgaSelect();
-  salvarNoLocalStorage();
-}
+    function adicionarExemplos() {
+      const exemplos = [
+        { nome: 'Ana Paula Silva', coren: 'SP-112233', turno: 'M', fds: 'S' },
+        { nome: 'Bruno Costa', coren: 'SP-223344', turno: 'M', fds: 'D' },
+        { nome: 'Carla Mendes', coren: 'SP-334455', turno: 'T', fds: 'S' },
+        { nome: 'Diego Ferreira', coren: 'SP-445566', turno: 'T', fds: 'D' },
+        { nome: 'Elaine Rodrigues', coren: 'SP-556677', turno: 'N', fds: 'A' },
+        { nome: 'Fábio Nascimento', coren: 'SP-667788', turno: 'N', fds: 'A' },
+        { nome: 'Gisele Alves', coren: 'SP-778899', turno: 'FL', fds: 'A' },
+      ];
+      exemplos.forEach(e => enfermeiros.push({ id: idCounter++, ...e }));
+      renderTabelaEnfermeiros();
+      updateFolgaSelect();
+      salvarNoLocalStorage();
+    }
 
-function removerEnfermeiro(id) {
-  enfermeiros = enfermeiros.filter(e => e.id !== id);
-  renderTabelaEnfermeiros();
-  updateFolgaSelect();
-  salvarNoLocalStorage();
-}
+    function removerEnfermeiro(id) {
+      enfermeiros = enfermeiros.filter(e => e.id !== id);
+      renderTabelaEnfermeiros();
+      updateFolgaSelect();
+      salvarNoLocalStorage();
+    }
 
-const TURNO_LABEL = { M:'☀️ Manhã', T:'🌤️ Tarde', N:'🌙 Noite', FL:'🔄 Flexível' };
-const TURNO_BADGE = { M:'badge-manha', T:'badge-tarde', N:'badge-noite', FL:'badge-flexivel' };
-const FDS_LABEL = { S:'Sábado', D:'Domingo', A:'Alternado' };
+    const TURNO_LABEL = { M: '☀️ Manhã', T: '🌤️ Tarde', N: '🌙 Noite', FL: '🔄 Flexível' };
+    const TURNO_BADGE = { M: 'badge-manha', T: 'badge-tarde', N: 'badge-noite', FL: 'badge-flexivel' };
+    const FDS_LABEL = { S: 'Sábado', D: 'Domingo', A: 'Alternado' };
 
-function renderTabelaEnfermeiros() {
-  document.getElementById('nurseCount').textContent = enfermeiros.length;
-  const div = document.getElementById('tabelaEnfermeiros');
-  if (!enfermeiros.length) {
-    div.innerHTML = `<div class="empty-state"><div class="icon">👩‍⚕️</div><h3>Nenhum enfermeiro cadastrado</h3><p>Adicione enfermeiros ou carregue os exemplos</p></div>`;
-    return;
-  }
-  div.innerHTML = `
+    function renderTabelaEnfermeiros() {
+      document.getElementById('nurseCount').textContent = enfermeiros.length;
+      const div = document.getElementById('tabelaEnfermeiros');
+      if (!enfermeiros.length) {
+        div.innerHTML = `<div class="empty-state"><div class="icon">👩‍⚕️</div><h3>Nenhum enfermeiro cadastrado</h3><p>Adicione enfermeiros ou carregue os exemplos</p></div>`;
+        return;
+      }
+      div.innerHTML = `
     <table class="nurses-table">
       <thead><tr>
         <th>Nome</th><th>COREN</th><th>Turno</th><th>FDS</th><th></th>
@@ -1168,7 +1439,7 @@ function renderTabelaEnfermeiros() {
         ${enfermeiros.map(e => `
           <tr>
             <td><strong>${e.nome}</strong></td>
-            <td style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--text2);">${e.coren||'—'}</td>
+            <td style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--text2);">${e.coren || '—'}</td>
             <td><span class="badge ${TURNO_BADGE[e.turno]}">${TURNO_LABEL[e.turno]}</span></td>
             <td style="color:var(--text2);font-size:0.8rem;">${FDS_LABEL[e.fds]}</td>
             <td><button class="btn btn-danger btn-sm" onclick="removerEnfermeiro(${e.id})">✕ Remover</button></td>
@@ -1176,345 +1447,345 @@ function renderTabelaEnfermeiros() {
         `).join('')}
       </tbody>
     </table>`;
-}
+    }
 
-// ============================================================
-//  FOLGAS
-// ============================================================
-function updateFolgaSelect() {
-  const sel = document.getElementById('folgaNurse');
-  sel.innerHTML = enfermeiros.map(e => `<option value="${e.id}">${e.nome}</option>`).join('');
-}
+    // ============================================================
+    //  FOLGAS
+    // ============================================================
+    function updateFolgaSelect() {
+      const sel = document.getElementById('folgaNurse');
+      sel.innerHTML = enfermeiros.map(e => `<option value="${e.id}">${e.nome}</option>`).join('');
+    }
 
-function adicionarFolga() {
-  const nurseId = parseInt(document.getElementById('folgaNurse').value);
-  const tipo = document.getElementById('folgaTipo').value;
-  const inicio = document.getElementById('folgaInicio').value;
-  const fim = document.getElementById('folgaFim').value;
-  if (!nurseId || !inicio) { alert('Selecione o enfermeiro e a data.'); return; }
-  folgas.push({ nurseId, tipo, inicio, fim: fim || inicio });
-  renderListaFolgas();
-  salvarNoLocalStorage();
-}
+    function adicionarFolga() {
+      const nurseId = parseInt(document.getElementById('folgaNurse').value);
+      const tipo = document.getElementById('folgaTipo').value;
+      const inicio = document.getElementById('folgaInicio').value;
+      const fim = document.getElementById('folgaFim').value;
+      if (!nurseId || !inicio) { alert('Selecione o enfermeiro e a data.'); return; }
+      folgas.push({ nurseId, tipo, inicio, fim: fim || inicio });
+      renderListaFolgas();
+      salvarNoLocalStorage();
+    }
 
-function removerFolga(idx) {
-  folgas.splice(idx, 1);
-  renderListaFolgas();
-  salvarNoLocalStorage();
-}
+    function removerFolga(idx) {
+      folgas.splice(idx, 1);
+      renderListaFolgas();
+      salvarNoLocalStorage();
+    }
 
-function renderListaFolgas() {
-  const div = document.getElementById('listaFolgas');
-  if (!folgas.length) { div.innerHTML = ''; return; }
-  div.innerHTML = folgas.map((f, i) => {
-    const enf = enfermeiros.find(e => e.id === f.nurseId);
-    const label = f.tipo === 'FE' ? '🔴 Férias' : '🟢 Folga';
-    const datas = f.inicio === f.fim ? f.inicio : `${f.inicio} → ${f.fim}`;
-    return `<div class="tag">${label} · <strong>${enf ? enf.nome.split(' ')[0] : '?'}</strong> · ${datas}<button onclick="removerFolga(${i})">×</button></div>`;
-  }).join('');
-}
+    function renderListaFolgas() {
+      const div = document.getElementById('listaFolgas');
+      if (!folgas.length) { div.innerHTML = ''; return; }
+      div.innerHTML = folgas.map((f, i) => {
+        const enf = enfermeiros.find(e => e.id === f.nurseId);
+        const label = f.tipo === 'FE' ? '🔴 Férias' : '🟢 Folga';
+        const datas = f.inicio === f.fim ? f.inicio : `${f.inicio} → ${f.fim}`;
+        return `<div class="tag">${label} · <strong>${enf ? enf.nome.split(' ')[0] : '?'}</strong> · ${datas}<button onclick="removerFolga(${i})">×</button></div>`;
+      }).join('');
+    }
 
-// ============================================================
-//  FERIADOS
-// ============================================================
-function adicionarFeriado() {
-  const data = document.getElementById('feriadoData').value;
-  const desc = document.getElementById('feriadoDesc').value.trim() || 'Feriado';
-  if (!data) return;
-  feriados.push({ data, desc });
-  renderFeriados();
-  salvarNoLocalStorage();
-}
+    // ============================================================
+    //  FERIADOS
+    // ============================================================
+    function adicionarFeriado() {
+      const data = document.getElementById('feriadoData').value;
+      const desc = document.getElementById('feriadoDesc').value.trim() || 'Feriado';
+      if (!data) return;
+      feriados.push({ data, desc });
+      renderFeriados();
+      salvarNoLocalStorage();
+    }
 
-function removerFeriado(i) { feriados.splice(i,1); renderFeriados(); salvarNoLocalStorage(); }
+    function removerFeriado(i) { feriados.splice(i, 1); renderFeriados(); salvarNoLocalStorage(); }
 
-function renderFeriados() {
-  document.getElementById('listaFeriados').innerHTML = feriados.map((f,i) =>
-    `<div class="tag">🔴 ${f.data} · ${f.desc}<button onclick="removerFeriado(${i})">×</button></div>`
-  ).join('');
-}
+    function renderFeriados() {
+      document.getElementById('listaFeriados').innerHTML = feriados.map((f, i) =>
+        `<div class="tag">🔴 ${f.data} · ${f.desc}<button onclick="removerFeriado(${i})">×</button></div>`
+      ).join('');
+    }
 
-// ============================================================
-//  CONFIG
-// ============================================================
-function salvarConfig() {
-  config.mes = parseInt(document.getElementById('cfgMes').value);
-  config.ano = parseInt(document.getElementById('cfgAno').value);
-  config.minManha = parseInt(document.getElementById('cfgMinManha').value);
-  config.minTarde = parseInt(document.getElementById('cfgMinTarde').value);
-  config.minNoite = parseInt(document.getElementById('cfgMinNoite').value);
-  config.minFds   = parseInt(document.getElementById('cfgMinFds').value);
-  salvarNoLocalStorage();
-  alert('✅ Configurações salvas!');
-}
+    // ============================================================
+    //  CONFIG
+    // ============================================================
+    function salvarConfig() {
+      config.mes = parseInt(document.getElementById('cfgMes').value);
+      config.ano = parseInt(document.getElementById('cfgAno').value);
+      config.minManha = parseInt(document.getElementById('cfgMinManha').value);
+      config.minTarde = parseInt(document.getElementById('cfgMinTarde').value);
+      config.minNoite = parseInt(document.getElementById('cfgMinNoite').value);
+      config.minFds = parseInt(document.getElementById('cfgMinFds').value);
+      salvarNoLocalStorage();
+      alert('✅ Configurações salvas!');
+    }
 
-// ============================================================
-//  GERAR ESCALA
-// ============================================================
-function diasDoMes(mes, ano) {
-  return new Date(ano, mes + 1, 0).getDate();
-}
+    // ============================================================
+    //  GERAR ESCALA
+    // ============================================================
+    function diasDoMes(mes, ano) {
+      return new Date(ano, mes + 1, 0).getDate();
+    }
 
-function diaDaSemana(dia, mes, ano) {
-  return new Date(ano, mes, dia).getDay(); 
-}
+    function diaDaSemana(dia, mes, ano) {
+      return new Date(ano, mes, dia).getDay();
+    }
 
-function isFeriado(dia) {
-  const d = `${config.ano}-${String(config.mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-  return feriados.some(f => f.data === d);
-}
+    function isFeriado(dia) {
+      const d = `${config.ano}-${String(config.mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+      return feriados.some(f => f.data === d);
+    }
 
-function getFolgaTipo(nurseId, dia) {
-  const d = `${config.ano}-${String(config.mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-  for (const f of folgas) {
-    if (f.nurseId !== nurseId) continue;
-    if (d >= f.inicio && d <= f.fim) return f.tipo;
-  }
-  return null;
-}
+    function getFolgaTipo(nurseId, dia) {
+      const d = `${config.ano}-${String(config.mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+      for (const f of folgas) {
+        if (f.nurseId !== nurseId) continue;
+        if (d >= f.inicio && d <= f.fim) return f.tipo;
+      }
+      return null;
+    }
 
-function gerarEscala() {
-  if (!enfermeiros.length) { alert('Cadastre pelo menos um enfermeiro antes de gerar a escala.'); return; }
+    function gerarEscala() {
+      if (!enfermeiros.length) { alert('Cadastre pelo menos um enfermeiro antes de gerar a escala.'); return; }
 
-  // Ler config atual antes de gerar
-  config.mes = parseInt(document.getElementById('cfgMes').value);
-  config.ano = parseInt(document.getElementById('cfgAno').value);
-  config.minManha = parseInt(document.getElementById('cfgMinManha').value);
-  config.minTarde = parseInt(document.getElementById('cfgMinTarde').value);
-  config.minNoite = parseInt(document.getElementById('cfgMinNoite').value);
-  config.minFds   = parseInt(document.getElementById('cfgMinFds').value);
+      // Ler config atual antes de gerar
+      config.mes = parseInt(document.getElementById('cfgMes').value);
+      config.ano = parseInt(document.getElementById('cfgAno').value);
+      config.minManha = parseInt(document.getElementById('cfgMinManha').value);
+      config.minTarde = parseInt(document.getElementById('cfgMinTarde').value);
+      config.minNoite = parseInt(document.getElementById('cfgMinNoite').value);
+      config.minFds = parseInt(document.getElementById('cfgMinFds').value);
 
-  const totalDias = diasDoMes(config.mes, config.ano);
-  escala = {};
-  enfermeiros.forEach(e => { escala[e.id] = {}; });
+      const totalDias = diasDoMes(config.mes, config.ano);
+      escala = {};
+      enfermeiros.forEach(e => { escala[e.id] = {}; });
 
-  const noiteState = {}; 
-  enfermeiros.filter(e => e.turno === 'N').forEach(e => { noiteState[e.id] = -99; });
+      const noiteState = {};
+      enfermeiros.filter(e => e.turno === 'N').forEach(e => { noiteState[e.id] = -99; });
 
-  for (let dia = 1; dia <= totalDias; dia++) {
-    const dow = diaDaSemana(dia, config.mes, config.ano);
-    const ehSabado = dow === 6;
-    const ehDomingo = dow === 0;
-    const ehFer = isFeriado(dia);
+      for (let dia = 1; dia <= totalDias; dia++) {
+        const dow = diaDaSemana(dia, config.mes, config.ano);
+        const ehSabado = dow === 6;
+        const ehDomingo = dow === 0;
+        const ehFer = isFeriado(dia);
 
-    enfermeiros.forEach(enf => {
-      const folgaTipo = getFolgaTipo(enf.id, dia);
-      if (folgaTipo) { escala[enf.id][dia] = folgaTipo; return; }
+        enfermeiros.forEach(enf => {
+          const folgaTipo = getFolgaTipo(enf.id, dia);
+          if (folgaTipo) { escala[enf.id][dia] = folgaTipo; return; }
 
-      // NOTURNO 12x36
-      if (enf.turno === 'N') {
-        const last = noiteState[enf.id];
-        if (last === dia - 1) {
-          escala[enf.id][dia] = 'FO';
-          noiteState[enf.id] = -99;
-        } else if (last <= dia - 2) {
-          escala[enf.id][dia] = 'N';
-          noiteState[enf.id] = dia;
-        }
-        return;
+          // NOTURNO 12x36
+          if (enf.turno === 'N') {
+            const last = noiteState[enf.id];
+            if (last === dia - 1) {
+              escala[enf.id][dia] = 'FO';
+              noiteState[enf.id] = -99;
+            } else if (last <= dia - 2) {
+              escala[enf.id][dia] = 'N';
+              noiteState[enf.id] = dia;
+            }
+            return;
+          }
+
+          // FERIADO em dia útil → Folga automática
+          if (ehFer) {
+            escala[enf.id][dia] = 'FERIADO';
+            return;
+          }
+
+          // FIM DE SEMANA
+          if (ehSabado) {
+            escala[enf.id][dia] = (enf.fds === 'S' || enf.fds === 'A') ? 'F' : 'FO';
+            return;
+          }
+          if (ehDomingo) {
+            escala[enf.id][dia] = (enf.fds === 'D' || enf.fds === 'A') ? 'D' : 'FO';
+            return;
+          }
+
+          // DIAS ÚTEIS
+          if (enf.turno === 'M') { escala[enf.id][dia] = 'M'; return; }
+          if (enf.turno === 'T') { escala[enf.id][dia] = 'T'; return; }
+          if (enf.turno === 'FL') {
+            escala[enf.id][dia] = (dia % 2 === 0) ? 'T' : 'M';
+            return;
+          }
+        });
       }
 
-      // FERIADO em dia útil → Folga automática
-      if (ehFer) {
-        escala[enf.id][dia] = 'FERIADO';
-        return;
+      // Validar cobertura e avisar sem bloquear
+      const alertas = verificarCobertura(totalDias);
+
+      renderEscala();
+      renderRelatorio();
+      salvarNoLocalStorage();
+      salvarEscalaNoHistorico();
+      goTab('escala');
+
+      if (alertas.length > 0) {
+        const msgs = alertas.slice(0, 8).map(a => `• ${a}`).join('\n');
+        const extra = alertas.length > 8 ? `\n... e mais ${alertas.length - 8} alertas (veja o Relatório).` : '';
+        setTimeout(() => alert(`⚠️ Escala gerada com ${alertas.length} alerta(s) de cobertura mínima:\n\n${msgs}${extra}`), 100);
       }
+    }
 
-      // FIM DE SEMANA
-      if (ehSabado) {
-        escala[enf.id][dia] = (enf.fds === 'S' || enf.fds === 'A') ? 'F' : 'FO';
-        return;
-      }
-      if (ehDomingo) {
-        escala[enf.id][dia] = (enf.fds === 'D' || enf.fds === 'A') ? 'D' : 'FO';
-        return;
-      }
+    // ============================================================
+    //  RENDER ESCALA
+    // ============================================================
+    function renderEscala() {
+      const totalDias = diasDoMes(config.mes, config.ano);
+      document.getElementById('escalaTitle').textContent = `Escala — ${MESES[config.mes]} ${config.ano}`;
 
-      // DIAS ÚTEIS
-      if (enf.turno === 'M') { escala[enf.id][dia] = 'M'; return; }
-      if (enf.turno === 'T') { escala[enf.id][dia] = 'T'; return; }
-      if (enf.turno === 'FL') {
-        escala[enf.id][dia] = (dia % 2 === 0) ? 'T' : 'M';
-        return;
-      }
-    });
-  }
-
-  // Validar cobertura e avisar sem bloquear
-  const alertas = verificarCobertura(totalDias);
-
-  renderEscala();
-  renderRelatorio();
-  salvarNoLocalStorage();
-  salvarEscalaNoHistorico();
-  goTab('escala');
-
-  if (alertas.length > 0) {
-    const msgs = alertas.slice(0, 8).map(a => `• ${a}`).join('\n');
-    const extra = alertas.length > 8 ? `\n... e mais ${alertas.length - 8} alertas (veja o Relatório).` : '';
-    setTimeout(() => alert(`⚠️ Escala gerada com ${alertas.length} alerta(s) de cobertura mínima:\n\n${msgs}${extra}`), 100);
-  }
-}
-
-// ============================================================
-//  RENDER ESCALA
-// ============================================================
-function renderEscala() {
-  const totalDias = diasDoMes(config.mes, config.ano);
-  document.getElementById('escalaTitle').textContent = `Escala — ${MESES[config.mes]} ${config.ano}`;
-
-  let html = `<table class="schedule-grid"><thead><tr>
+      let html = `<table class="schedule-grid"><thead><tr>
     <th class="nurse-col">Enfermeiro</th>`;
 
-  for (let d = 1; d <= totalDias; d++) {
-    const dow = diaDaSemana(d, config.mes, config.ano);
-    const isFer = isFeriado(d);
-    let cls = '';
-    if (dow === 6) cls = 'weekend-col';
-    else if (dow === 0) cls = 'sunday-col';
-    
-    const label = isFer
-      ? `<span class="feriado-header" title="${getFeriadoDesc(d)}">🔴${d}</span>`
-      : d;
-    html += `<th class="${cls}" title="${DIAS_SEMANA[dow]}">${label}<br><small style="font-weight:400;opacity:0.6">${DIAS_SEMANA[dow]}</small></th>`;
-  }
-  html += `</tr></thead><tbody>`;
+      for (let d = 1; d <= totalDias; d++) {
+        const dow = diaDaSemana(d, config.mes, config.ano);
+        const isFer = isFeriado(d);
+        let cls = '';
+        if (dow === 6) cls = 'weekend-col';
+        else if (dow === 0) cls = 'sunday-col';
 
-  enfermeiros.forEach((enf) => {
-    html += `<tr>
+        const label = isFer
+          ? `<span class="feriado-header" title="${getFeriadoDesc(d)}">🔴${d}</span>`
+          : d;
+        html += `<th class="${cls}" title="${DIAS_SEMANA[dow]}">${label}<br><small style="font-weight:400;opacity:0.6">${DIAS_SEMANA[dow]}</small></th>`;
+      }
+      html += `</tr></thead><tbody>`;
+
+      enfermeiros.forEach((enf) => {
+        html += `<tr>
       <td class="nurse-name">${enf.nome}<br><small style="font-size:0.65rem;color:var(--text2);">${TURNO_LABEL[enf.turno]}</small></td>`;
-    for (let d = 1; d <= totalDias; d++) {
-      const val = escala[enf.id]?.[d] || '';
-      const isFer = isFeriado(d);
-      const dow = diaDaSemana(d, config.mes, config.ano);
-      let colCls = '';
-      if (dow === 6) colCls = 'weekend-col';
-      else if (dow === 0) colCls = 'sunday-col';
+        for (let d = 1; d <= totalDias; d++) {
+          const val = escala[enf.id]?.[d] || '';
+          const isFer = isFeriado(d);
+          const dow = diaDaSemana(d, config.mes, config.ano);
+          let colCls = '';
+          if (dow === 6) colCls = 'weekend-col';
+          else if (dow === 0) colCls = 'sunday-col';
 
-      let cellCls, display, title;
-      if (val === 'FERIADO') {
-        cellCls = 'cell-FERIADO';
-        display = '🔴';
-        const desc = getFeriadoDesc(d).replace(/"/g, '&quot;');
-        title = `${enf.nome} — ${desc}`;
-      } else {
-        cellCls = val ? `cell-${val}` : '';
-        display = { M:'M', T:'T', N:'N', F:'S', D:'D', FO:'F', FE:'V', '':'' }[val] || val;
-        title = `${enf.nome} — dia ${d}${isFer ? ' (Feriado)' : ''}`;
+          let cellCls, display, title;
+          if (val === 'FERIADO') {
+            cellCls = 'cell-FERIADO';
+            display = '🔴';
+            const desc = getFeriadoDesc(d).replace(/"/g, '&quot;');
+            title = `${enf.nome} — ${desc}`;
+          } else {
+            cellCls = val ? `cell-${val}` : '';
+            display = { M: 'M', T: 'T', N: 'N', F: 'S', D: 'D', FO: 'F', FE: 'V', '': '' }[val] || val;
+            title = `${enf.nome} — dia ${d}${isFer ? ' (Feriado)' : ''}`;
+          }
+
+          html += `<td class="${cellCls} ${colCls}" onmousedown="openCtx(event,${enf.id},${d})" title="${title}">${display}</td>`;
+        }
+        html += `</tr>`;
+      });
+
+      html += `</tbody></table>`;
+      document.getElementById('escalaGrid').innerHTML = html;
+    }
+
+    function getFeriadoDesc(dia) {
+      const d = `${config.ano}-${String(config.mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+      const f = feriados.find(f => f.data === d);
+      return f ? f.desc : 'Feriado';
+    }
+
+    // ============================================================
+    //  CONTEXT MENU — ALTERAÇÃO DE TURNOS
+    // ============================================================
+    let ctxOpen = false;
+
+    function openCtx(e, nurseId, day) {
+      if (e.button !== 0) return; // apenas clique esquerdo
+      e.preventDefault();
+      e.stopPropagation();
+      activeCell = { nurseId, day };
+      const menu = document.getElementById('ctxMenu');
+      const x = Math.min(e.clientX, window.innerWidth - 180);
+      const y = Math.min(e.clientY, window.innerHeight - 300);
+      menu.style.left = x + 'px';
+      menu.style.top = y + 'px';
+      menu.classList.add('show');
+      ctxOpen = true;
+    }
+
+    function setCellValue(val) {
+      if (!activeCell) return;
+      if (!escala[activeCell.nurseId]) escala[activeCell.nurseId] = {};
+      escala[activeCell.nurseId][activeCell.day] = val;
+      document.getElementById('ctxMenu').classList.remove('show');
+      ctxOpen = false;
+      activeCell = null;
+      renderEscala();
+      renderRelatorio();
+      salvarNoLocalStorage();
+    }
+
+    // Fechar menu ao clicar fora — usa mousedown para capturar antes do click
+    document.addEventListener('mousedown', (e) => {
+      const menu = document.getElementById('ctxMenu');
+      if (menu && !menu.contains(e.target)) {
+        menu.classList.remove('show');
+        ctxOpen = false;
+      }
+    });
+
+    // ============================================================
+    //  VERIFICAR COBERTURA MÍNIMA
+    // ============================================================
+    function verificarCobertura(totalDias) {
+      const alertas = [];
+      for (let d = 1; d <= totalDias; d++) {
+        const dow = diaDaSemana(d, config.mes, config.ano);
+        const ehFer = isFeriado(d);
+        const ehSab = dow === 6, ehDom = dow === 0;
+        let countM = 0, countT = 0, countN = 0, countFds = 0;
+        enfermeiros.forEach(enf => {
+          const v = escala[enf.id]?.[d] || '';
+          if (v === 'M') countM++;
+          if (v === 'T') countT++;
+          if (v === 'N') countN++;
+          if (v === 'F' || v === 'D') countFds++;
+        });
+        if (!ehSab && !ehDom && !ehFer) {
+          if (countM < config.minManha) alertas.push(`Dia ${d}: Manhã insuficiente (${countM}/${config.minManha})`);
+          if (countT < config.minTarde) alertas.push(`Dia ${d}: Tarde insuficiente (${countT}/${config.minTarde})`);
+        } else if (ehSab || ehDom) {
+          if (countFds < config.minFds) alertas.push(`FDS Dia ${d}: Cobertura insuficiente (${countFds}/${config.minFds})`);
+        }
+        if (countN < config.minNoite) alertas.push(`Dia ${d}: Noite insuficiente (${countN}/${config.minNoite})`);
+      }
+      return alertas;
+    }
+
+    // ============================================================
+    //  RELATÓRIO
+    // ============================================================
+    function renderRelatorio() {
+      const totalDias = diasDoMes(config.mes, config.ano);
+      const div = document.getElementById('relatorioContent');
+
+      if (!enfermeiros.length || !Object.keys(escala).length) {
+        div.innerHTML = `<div class="empty-state"><div class="icon">📊</div><h3>Gere a escala primeiro</h3></div>`;
+        return;
       }
 
-      html += `<td class="${cellCls} ${colCls}" onmousedown="openCtx(event,${enf.id},${d})" title="${title}">${display}</td>`;
-    }
-    html += `</tr>`;
-  });
+      const resumo = enfermeiros.map(enf => {
+        const dias = escala[enf.id] || {};
+        let horas = 0, plantoes = { M: 0, T: 0, N: 0, F: 0, D: 0, FO: 0, FE: 0 };
+        for (let d = 1; d <= totalDias; d++) {
+          const v = dias[d] || '';
+          if (plantoes[v] !== undefined) plantoes[v]++;
+          if (v === 'M') horas += 6;
+          else if (v === 'T') horas += 6;
+          else if (v === 'N') horas += 12;
+          else if (v === 'F' || v === 'D') horas += 10;
+        }
+        return { enf, horas, plantoes };
+      });
 
-  html += `</tbody></table>`;
-  document.getElementById('escalaGrid').innerHTML = html;
-}
+      const alerts = verificarCobertura(totalDias);
 
-function getFeriadoDesc(dia) {
-  const d = `${config.ano}-${String(config.mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-  const f = feriados.find(f => f.data === d);
-  return f ? f.desc : 'Feriado';
-}
-
-// ============================================================
-//  CONTEXT MENU — ALTERAÇÃO DE TURNOS
-// ============================================================
-let ctxOpen = false;
-
-function openCtx(e, nurseId, day) {
-  if (e.button !== 0) return; // apenas clique esquerdo
-  e.preventDefault();
-  e.stopPropagation();
-  activeCell = { nurseId, day };
-  const menu = document.getElementById('ctxMenu');
-  const x = Math.min(e.clientX, window.innerWidth - 180);
-  const y = Math.min(e.clientY, window.innerHeight - 300);
-  menu.style.left = x + 'px';
-  menu.style.top  = y + 'px';
-  menu.classList.add('show');
-  ctxOpen = true;
-}
-
-function setCellValue(val) {
-  if (!activeCell) return;
-  if (!escala[activeCell.nurseId]) escala[activeCell.nurseId] = {};
-  escala[activeCell.nurseId][activeCell.day] = val;
-  document.getElementById('ctxMenu').classList.remove('show');
-  ctxOpen = false;
-  activeCell = null;
-  renderEscala();
-  renderRelatorio();
-  salvarNoLocalStorage();
-}
-
-// Fechar menu ao clicar fora — usa mousedown para capturar antes do click
-document.addEventListener('mousedown', (e) => {
-  const menu = document.getElementById('ctxMenu');
-  if (menu && !menu.contains(e.target)) {
-    menu.classList.remove('show');
-    ctxOpen = false;
-  }
-});
-
-// ============================================================
-//  VERIFICAR COBERTURA MÍNIMA
-// ============================================================
-function verificarCobertura(totalDias) {
-  const alertas = [];
-  for (let d = 1; d <= totalDias; d++) {
-    const dow = diaDaSemana(d, config.mes, config.ano);
-    const ehFer = isFeriado(d);
-    const ehSab = dow === 6, ehDom = dow === 0;
-    let countM = 0, countT = 0, countN = 0, countFds = 0;
-    enfermeiros.forEach(enf => {
-      const v = escala[enf.id]?.[d] || '';
-      if (v === 'M') countM++;
-      if (v === 'T') countT++;
-      if (v === 'N') countN++;
-      if (v === 'F' || v === 'D') countFds++;
-    });
-    if (!ehSab && !ehDom && !ehFer) {
-      if (countM < config.minManha) alertas.push(`Dia ${d}: Manhã insuficiente (${countM}/${config.minManha})`);
-      if (countT < config.minTarde) alertas.push(`Dia ${d}: Tarde insuficiente (${countT}/${config.minTarde})`);
-    } else if (ehSab || ehDom) {
-      if (countFds < config.minFds) alertas.push(`FDS Dia ${d}: Cobertura insuficiente (${countFds}/${config.minFds})`);
-    }
-    if (countN < config.minNoite) alertas.push(`Dia ${d}: Noite insuficiente (${countN}/${config.minNoite})`);
-  }
-  return alertas;
-}
-
-// ============================================================
-//  RELATÓRIO
-// ============================================================
-function renderRelatorio() {
-  const totalDias = diasDoMes(config.mes, config.ano);
-  const div = document.getElementById('relatorioContent');
-
-  if (!enfermeiros.length || !Object.keys(escala).length) {
-    div.innerHTML = `<div class="empty-state"><div class="icon">📊</div><h3>Gere a escala primeiro</h3></div>`;
-    return;
-  }
-
-  const resumo = enfermeiros.map(enf => {
-    const dias = escala[enf.id] || {};
-    let horas = 0, plantoes = { M:0, T:0, N:0, F:0, D:0, FO:0, FE:0 };
-    for (let d = 1; d <= totalDias; d++) {
-      const v = dias[d] || '';
-      if (plantoes[v] !== undefined) plantoes[v]++;
-      if (v === 'M') horas += 6;
-      else if (v === 'T') horas += 6;
-      else if (v === 'N') horas += 12;
-      else if (v === 'F' || v === 'D') horas += 10;
-    }
-    return { enf, horas, plantoes };
-  });
-
-  const alerts = verificarCobertura(totalDias);
-
-  let html = `
+      let html = `
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-label">Total de Enfermeiros</div><div class="stat-value">${enfermeiros.length}</div><div class="stat-sub">profissionais cadastrados</div></div>
     <div class="stat-card"><div class="stat-label">Dias no Mês</div><div class="stat-value">${totalDias}</div><div class="stat-sub">${MESES[config.mes]} ${config.ano}</div></div>
@@ -1522,14 +1793,14 @@ function renderRelatorio() {
     <div class="stat-card"><div class="stat-label">Feriados</div><div class="stat-value">${feriados.length}</div><div class="stat-sub">no mês configurado</div></div>
   </div>`;
 
-  if (alerts.length) {
-    html += alerts.slice(0,8).map(a => `<div class="alert alert-warning">⚠️ ${a.replace('⚠️ ','')}</div>`).join('');
-    if (alerts.length > 8) html += `<div class="alert alert-info">... e mais ${alerts.length-8} alertas. Revise a escala.</div>`;
-  } else {
-    html += `<div class="alert alert-success">✅ Cobertura mínima garantida em todos os dias do mês.</div>`;
-  }
+      if (alerts.length) {
+        html += alerts.slice(0, 8).map(a => `<div class="alert alert-warning">⚠️ ${a.replace('⚠️ ', '')}</div>`).join('');
+        if (alerts.length > 8) html += `<div class="alert alert-info">... e mais ${alerts.length - 8} alertas. Revise a escala.</div>`;
+      } else {
+        html += `<div class="alert alert-success">✅ Cobertura mínima garantida em todos os dias do mês.</div>`;
+      }
 
-  html += `
+      html += `
   <div class="card">
     <div class="card-title" style="margin-bottom:1rem;">👤 Resumo por Enfermeiro</div>
     <table class="cobertura-table">
@@ -1560,77 +1831,79 @@ function renderRelatorio() {
     </table>
   </div>`;
 
-  div.innerHTML = html;
-}
-
-// ============================================================
-//  EXPORT CSV (sem dependência externa — funciona offline)
-// ============================================================
-function exportExcel() {
-  if (!Object.keys(escala).length) {
-    alert('Gere a escala antes de exportar.');
-    return;
-  }
-
-  const totalDias = diasDoMes(config.mes, config.ano);
-  const displayMap = { M:'M', T:'T', N:'N', F:'SAB', D:'DOM', FO:'FOLGA', FE:'FERIAS', FERIADO:'FERIADO', '':'' };
-
-  const escape = v => {
-    const s = String(v ?? '');
-    return s.includes(',') || s.includes('"') || s.includes('\n')
-      ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-
-  const headers = ['Enfermeiro', 'Turno', 'COREN'];
-  for (let d = 1; d <= totalDias; d++) {
-    const dow = diaDaSemana(d, config.mes, config.ano);
-    headers.push(`${d}-${DIAS_SEMANA[dow]}`);
-  }
-  headers.push('Total Horas');
-
-  const rows = [headers.map(escape).join(',')];
-
-  enfermeiros.forEach(enf => {
-    const turnoLabel = { M:'Manha', T:'Tarde', N:'Noite', FL:'Flexivel' }[enf.turno] || enf.turno;
-    const row = [enf.nome, turnoLabel, enf.coren || ''];
-    let horas = 0;
-    for (let d = 1; d <= totalDias; d++) {
-      const v = escala[enf.id]?.[d] || '';
-      row.push(displayMap[v] || v);
-      if (v==='M'||v==='T') horas+=6;
-      else if (v==='N') horas+=12;
-      else if (v==='F'||v==='D') horas+=10;
+      div.innerHTML = html;
     }
-    row.push(horas + 'h');
-    rows.push(row.map(escape).join(','));
-  });
 
-  const bom = '\uFEFF'; // BOM para Excel reconhecer UTF-8
-  const csv = bom + rows.join('\r\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Escala_${MESES[config.mes]}_${config.ano}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+    // ============================================================
+    //  EXPORTA CSV (sem dependência externa — funciona offline)
+    // ============================================================
 
-// ============================================================
-//  INIT
-// ============================================================
-(function init() {
-  const agora = new Date();
-  config.mes = agora.getMonth();
-  config.ano = agora.getFullYear();
-  document.getElementById('cfgMes').value = config.mes;
-  document.getElementById('cfgAno').value = config.ano;
-  
-  carregarDoLocalStorage(); // Carrega dados salvos ao abrir
-  renderTabelaEnfermeiros();
-})();
-</script>
+    function exportExcel() {
+      if (!Object.keys(escala).length) {
+        alert('Gere a escala antes de exportar.');
+        return;
+      }
+
+      const totalDias = diasDoMes(config.mes, config.ano);
+      const displayMap = { M: 'M', T: 'T', N: 'N', F: 'SAB', D: 'DOM', FO: 'FOLGA', FE: 'FERIAS', FERIADO: 'FERIADO', '': '' };
+
+      const escape = v => {
+        const s = String(v ?? '');
+        return s.includes(',') || s.includes('"') || s.includes('\n')
+          ? `"${s.replace(/"/g, '""')}"` : s;
+      };
+
+      const headers = ['Enfermeiro', 'Turno', 'COREN'];
+      for (let d = 1; d <= totalDias; d++) {
+        const dow = diaDaSemana(d, config.mes, config.ano);
+        headers.push(`${d}-${DIAS_SEMANA[dow]}`);
+      }
+      headers.push('Total Horas');
+
+      const rows = [headers.map(escape).join(',')];
+
+      enfermeiros.forEach(enf => {
+        const turnoLabel = { M: 'Manha', T: 'Tarde', N: 'Noite', FL: 'Flexivel' }[enf.turno] || enf.turno;
+        const row = [enf.nome, turnoLabel, enf.coren || ''];
+        let horas = 0;
+        for (let d = 1; d <= totalDias; d++) {
+          const v = escala[enf.id]?.[d] || '';
+          row.push(displayMap[v] || v);
+          if (v === 'M' || v === 'T') horas += 6;
+          else if (v === 'N') horas += 12;
+          else if (v === 'F' || v === 'D') horas += 10;
+        }
+        row.push(horas + 'h');
+        rows.push(row.map(escape).join(','));
+      });
+
+      const bom = '\uFEFF'; 
+      const csv = bom + rows.join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Escala_${MESES[config.mes]}_${config.ano}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ============================================================
+    //  INIT
+    // ============================================================
+    (function init() {
+      const agora = new Date();
+      config.mes = agora.getMonth();
+      config.ano = agora.getFullYear();
+      document.getElementById('cfgMes').value = config.mes;
+      document.getElementById('cfgAno').value = config.ano;
+
+      carregarDoLocalStorage();
+      renderTabelaEnfermeiros();
+    })();
+  </script>
 </body>
+
 </html>
