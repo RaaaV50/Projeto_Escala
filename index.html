@@ -959,16 +959,23 @@
             <select id="turnoEnf">
               <option value="M">☀️ Manhã (6h - dias úteis / 10h FDS)</option>
               <option value="T">🌤️ Tarde (6h - dias úteis / 10h FDS)</option>
-              <option value="N">🌙 Noite (12x36h)</option>
+              <option value="N">🌙 Noite (12x36h — ignora FDS/feriado)</option>
               <option value="FL">🔄 Flexível</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Fim de semana</label>
+            <label>Fim de semana <small style="color:var(--text2)">(ignorado no Noturno)</small></label>
             <select id="fdsEnf">
               <option value="S">Sábado (10h)</option>
               <option value="D">Domingo (10h)</option>
               <option value="A">Alternado</option>
+            </select>
+          </div>
+          <div class="form-group" id="diaInicioGroup">
+            <label>Noturno: dia inicial do mês (1–2)</label>
+            <select id="diaInicioEnf">
+              <option value="1">Dia 1 trabalha</option>
+              <option value="2">Dia 2 trabalha</option>
             </select>
           </div>
         </div>
@@ -1386,8 +1393,9 @@
       const coren = document.getElementById('corenEnf').value.trim();
       const turno = document.getElementById('turnoEnf').value;
       const fds = document.getElementById('fdsEnf').value;
+      const diaInicio = parseInt(document.getElementById('diaInicioEnf').value) || 1;
       if (!nome) { alert('Informe o nome do enfermeiro.'); return; }
-      enfermeiros.push({ id: idCounter++, nome, coren, turno, fds });
+      enfermeiros.push({ id: idCounter++, nome, coren, turno, fds, diaInicio });
       document.getElementById('nomeEnf').value = '';
       document.getElementById('corenEnf').value = '';
       renderTabelaEnfermeiros();
@@ -1402,8 +1410,8 @@
         { nome: 'Bruno Costa', coren: 'SP-223344', turno: 'M', fds: 'D' },
         { nome: 'Carla Mendes', coren: 'SP-334455', turno: 'T', fds: 'S' },
         { nome: 'Diego Ferreira', coren: 'SP-445566', turno: 'T', fds: 'D' },
-        { nome: 'Elaine Rodrigues', coren: 'SP-556677', turno: 'N', fds: 'A' },
-        { nome: 'Fábio Nascimento', coren: 'SP-667788', turno: 'N', fds: 'A' },
+        { nome: 'Elaine Rodrigues', coren: 'SP-556677', turno: 'N', fds: 'A', diaInicio: 1 },
+        { nome: 'Fábio Nascimento', coren: 'SP-667788', turno: 'N', fds: 'A', diaInicio: 2 },
         { nome: 'Gisele Alves', coren: 'SP-778899', turno: 'FL', fds: 'A' },
       ];
       exemplos.forEach(e => enfermeiros.push({ id: idCounter++, ...e }));
@@ -1423,6 +1431,15 @@
     const TURNO_BADGE = { M: 'badge-manha', T: 'badge-tarde', N: 'badge-noite', FL: 'badge-flexivel' };
     const FDS_LABEL = { S: 'Sábado', D: 'Domingo', A: 'Alternado' };
 
+    // Mostrar/ocultar campos conforme turno selecionado
+    document.getElementById('turnoEnf').addEventListener('change', function() {
+      const isNoite = this.value === 'N';
+      document.getElementById('fdsEnf').closest('.form-group').style.display = isNoite ? 'none' : '';
+      document.getElementById('diaInicioGroup').style.display = isNoite ? '' : 'none';
+    });
+    // Estado inicial
+    document.getElementById('diaInicioGroup').style.display = 'none';
+
     function renderTabelaEnfermeiros() {
       document.getElementById('nurseCount').textContent = enfermeiros.length;
       const div = document.getElementById('tabelaEnfermeiros');
@@ -1433,7 +1450,7 @@
       div.innerHTML = `
     <table class="nurses-table">
       <thead><tr>
-        <th>Nome</th><th>COREN</th><th>Turno</th><th>FDS</th><th></th>
+        <th>Nome</th><th>COREN</th><th>Turno</th><th>FDS / Ciclo Noite</th><th></th>
       </tr></thead>
       <tbody>
         ${enfermeiros.map(e => `
@@ -1441,7 +1458,7 @@
             <td><strong>${e.nome}</strong></td>
             <td style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--text2);">${e.coren || '—'}</td>
             <td><span class="badge ${TURNO_BADGE[e.turno]}">${TURNO_LABEL[e.turno]}</span></td>
-            <td style="color:var(--text2);font-size:0.8rem;">${FDS_LABEL[e.fds]}</td>
+            <td style="color:var(--text2);font-size:0.8rem;">${e.turno === 'N' ? `🌙 Inicia dia ${e.diaInicio || 1}` : FDS_LABEL[e.fds]}</td>
             <td><button class="btn btn-danger btn-sm" onclick="removerEnfermeiro(${e.id})">✕ Remover</button></td>
           </tr>
         `).join('')}
@@ -1556,11 +1573,9 @@
       config.minFds = parseInt(document.getElementById('cfgMinFds').value);
 
       const totalDias = diasDoMes(config.mes, config.ano);
+      // Resetar escala completamente ao (re)gerar — edições manuais são descartadas
       escala = {};
       enfermeiros.forEach(e => { escala[e.id] = {}; });
-
-      const noiteState = {};
-      enfermeiros.filter(e => e.turno === 'N').forEach(e => { noiteState[e.id] = -99; });
 
       for (let dia = 1; dia <= totalDias; dia++) {
         const dow = diaDaSemana(dia, config.mes, config.ano);
@@ -1569,23 +1584,27 @@
         const ehFer = isFeriado(dia);
 
         enfermeiros.forEach(enf => {
+          // Folgas/férias pré-registradas têm prioridade
           const folgaTipo = getFolgaTipo(enf.id, dia);
           if (folgaTipo) { escala[enf.id][dia] = folgaTipo; return; }
 
-          // NOTURNO 12x36
+          // ── NOTURNO 12x36 ──────────────────────────────────────────
+          // Ciclo IGNORA feriados e fins de semana — apenas conta os dias corridos.
+          // diaInicio: 1 = trabalha no dia 1, folga dia 2, trabalha dia 3...
+          //            2 = folga dia 1, trabalha dia 2, folga dia 3...
           if (enf.turno === 'N') {
-            const last = noiteState[enf.id];
-            if (last === dia - 1) {
-              escala[enf.id][dia] = 'FO';
-              noiteState[enf.id] = -99;
-            } else if (last <= dia - 2) {
+            const diaInicio = enf.diaInicio || 1;
+            // posição no ciclo: 0 = trabalha (N), 1 = folga (FO)
+            const pos = (dia - diaInicio) % 2;
+            if (pos === 0) {
               escala[enf.id][dia] = 'N';
-              noiteState[enf.id] = dia;
+            } else {
+              escala[enf.id][dia] = 'FO';
             }
             return;
           }
 
-          // FERIADO em dia útil → Folga automática
+          // FERIADO em dia útil → marca como FERIADO
           if (ehFer) {
             escala[enf.id][dia] = 'FERIADO';
             return;
@@ -1752,6 +1771,7 @@
         } else if (ehSab || ehDom) {
           if (countFds < config.minFds) alertas.push(`FDS Dia ${d}: Cobertura insuficiente (${countFds}/${config.minFds})`);
         }
+        // Noite: verificar todos os dias (12x36 pode naturalmente ter folgas)
         if (countN < config.minNoite) alertas.push(`Dia ${d}: Noite insuficiente (${countN}/${config.minNoite})`);
       }
       return alertas;
