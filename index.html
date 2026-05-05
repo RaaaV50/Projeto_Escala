@@ -23,8 +23,7 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn btn-secondary btn-sm tooltip" data-tip="Histórico de escalas salvas" onclick="abrirHistorico()"
-        style="font-size:1rem; padding:0.5rem 0.75rem;">🗂️</button>
+      <button class="btn btn-secondary btn-sm" data-tip="Histórico de escalas salvas" onclick="abrirHistorico()">🗂️ Escalas Anteriores</button>
       <button class="btn btn-secondary btn-sm"
         onclick="localStorage.clear(); alert('Escalas e Enfermeiros anteriormente adicionados serão apagados!'); location.reload();">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -67,7 +66,6 @@
               <option value="M">☀️ Manhã (6h dias úteis · 12h FDS alternado)</option>
               <option value="T">🌤️ Tarde (6h dias úteis · 12h FDS alternado)</option>
               <option value="N">🌙 Noite (12x36h — ciclo corrido)</option>
-              <option value="FL">🔄 Flexível</option>
             </select>
           </div>
           <div class="form-group" id="diaInicioGroup" style="display:none;">
@@ -78,7 +76,7 @@
             </select>
           </div>
           <div class="form-group" id="fdsInicioGroup">
-            <label>FDS: qual plantão faz <u>primeiro</u> neste mês?</label>
+            <label>FDS: Qual é o primeiro plantão?</label>
             <select id="fdsInicioEnf">
               <option value="S">Sábado primeiro</option>
               <option value="D">Domingo primeiro</option>
