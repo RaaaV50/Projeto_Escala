@@ -23,6 +23,9 @@
       </div>
     </div>
     <div class="header-actions">
+      <button id="btnImportarFeriados" class="btn btn-primary" onclick="importarFeriadosBrasilAPI()">
+            📅 Importar Feriados Nacionais
+          </button>
       <button class="btn btn-secondary btn-sm" data-tip="Histórico de escalas salvas" onclick="abrirHistorico()">🗂️ Escalas Anteriores</button>
       <button class="btn btn-secondary btn-sm"
         onclick="localStorage.clear(); alert('Escalas e Enfermeiros anteriormente adicionados serão apagados!'); location.reload();">
@@ -216,6 +219,11 @@
             <input type="text" id="feriadoDesc" placeholder="Ex: Corpus Christi">
           </div>
           <button class="btn btn-secondary" onclick="adicionarFeriado()">➕ Adicionar</button>
+        </div>
+        <div style="margin-top:1rem;">
+          <small style="display:block; margin-top:0.4rem; color:var(--text2);">
+            Busca automaticamente os feriados nacionais do mês/ano configurado via Brasil API.
+          </small>
         </div>
         <div id="listaFeriados" class="tag-list" style="margin-top:1rem;"></div>
       </div>

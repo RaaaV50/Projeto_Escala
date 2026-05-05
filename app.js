@@ -1,4 +1,4 @@
-    // ============================================================
+// ============================================================
     //  STATE
     // ============================================================
     let enfermeiros = [];
@@ -177,7 +177,6 @@
         { nome: 'Diego Ferreira', coren: 'SP-445566', turno: 'T', fds: 'D' },
         { nome: 'Elaine Rodrigues', coren: 'SP-556677', turno: 'N', fds: 'S', diaInicio: 1 },
         { nome: 'Fábio Nascimento', coren: 'SP-667788', turno: 'N', fds: 'S', diaInicio: 2 },
-        { nome: 'Gisele Alves', coren: 'SP-778899', turno: 'FL', fds: 'S' },
       ];
       exemplos.forEach(e => enfermeiros.push({ id: idCounter++, ...e }));
       renderTabelaEnfermeiros();
@@ -272,6 +271,8 @@
       const data = document.getElementById('feriadoData').value;
       const desc = document.getElementById('feriadoDesc').value.trim() || 'Feriado';
       if (!data) return;
+      // Evitar duplicata
+      if (feriados.some(f => f.data === data)) { alert('Este feriado já está cadastrado.'); return; }
       feriados.push({ data, desc });
       renderFeriados();
       salvarNoLocalStorage();
@@ -285,9 +286,57 @@
       ).join('');
     }
 
+    // Busca feriados nacionais na Brasil API e adiciona automaticamente
+    async function importarFeriadosBrasilAPI() {
+      const ano = parseInt(document.getElementById('cfgAno').value) || config.ano;
+      const mes = parseInt(document.getElementById('cfgMes').value);
+      const btn = document.getElementById('btnImportarFeriados');
+
+      btn.disabled = true;
+      btn.textContent = '⏳ Buscando...';
+
+      try {
+        const res = await fetch(`https://brasilapi.com.br/api/feriados/v1/${ano}`);
+        if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+        const todos = await res.json();
+
+        // Filtra apenas os do mês selecionado
+        //const mesPadded = String(mes + 1).padStart(2, '0');
+        //const doMes = todos.filter(f => f.date.startsWith(`${ano}-${mesPadded}`));
+
+        if (!doMes.length) {
+          btn.disabled = false;
+          btn.textContent = '📅 Importar Feriados Nacionais';
+          alert(`Nenhum feriado nacional encontrado em ${MESES[mes]} ${ano}.`);
+          return;
+        }
+
+        let adicionados = 0;
+        doMes.forEach(f => {
+          if (!feriados.some(x => x.data === f.date)) {
+            feriados.push({ data: f.date, desc: f.name });
+            adicionados++;
+          }
+        });
+
+        renderFeriados();
+        salvarNoLocalStorage();
+
+        btn.disabled = false;
+        btn.textContent = '📅 Importar Feriados Nacionais';
+        alert(`✅ ${adicionados} feriado(s) importado(s) para ${MESES[mes]} ${ano}!${adicionados < doMes.length ? `\n(${doMes.length - adicionados} já estavam cadastrados)` : ''}`);
+
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = '📅 Importar Feriados Nacionais';
+        alert(`❌ Erro ao buscar feriados: ${err.message}\nVerifique sua conexão e tente novamente.`);
+      }
+    }
+
     // ============================================================
     //  CONFIG
     // ============================================================
+
     function salvarConfig() {
       config.mes = parseInt(document.getElementById('cfgMes').value);
       config.ano = parseInt(document.getElementById('cfgAno').value);
@@ -302,6 +351,7 @@
     // ============================================================
     //  GERAR ESCALA
     // ============================================================
+
     function diasDoMes(mes, ano) {
       return new Date(ano, mes + 1, 0).getDate();
     }
