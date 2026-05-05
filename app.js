@@ -278,7 +278,7 @@
       salvarNoLocalStorage();
     }
 
-    function removerFeriado(i) { feriados.splice(i, 1); renderFeriados(); salvarNoLocalStorage(); }
+    function removerFeriado(i) { feriados.splice(i, 1); renderFeriados();DoMessalvarNoLocalStorage(); }
 
     function renderFeriados() {
       document.getElementById('listaFeriados').innerHTML = feriados.map((f, i) =>
@@ -300,9 +300,9 @@
         if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
         const todos = await res.json();
 
-        // Filtra apenas os do mês selecionado
-        //const mesPadded = String(mes + 1).padStart(2, '0');
-        //const doMes = todos.filter(f => f.date.startsWith(`${ano}-${mesPadded}`));
+        //Filtra apenas os do mês selecionado
+        const mesPadded = String(mes + 1).padStart(2, '0');
+        const doMes = todos.filter(f => f.date.startsWith(`${ano}-${mesPadded}`));
 
         if (!doMes.length) {
           btn.disabled = false;
