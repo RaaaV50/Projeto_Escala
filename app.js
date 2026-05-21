@@ -1,10 +1,8 @@
-// ============================================================
-    //  STATE
-    // ============================================================
+
     let enfermeiros = [];
     let folgas = [];
     let feriados = [];
-    let escala = {}; // { nurseId: { day: 'M'|'T'|'N'|'F'|'D'|'FO'|'FE' } }
+    let escala = {}; // { nurseId: { dias: 'M'|'T'|'N'|'F'|'D'|'FO'|'FE' } }
     let config = {
       mes: new Date().getMonth(),
       ano: new Date().getFullYear(),
@@ -16,9 +14,9 @@
     const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-    // ============================================================
+ 
     //  TABS
-    // ============================================================
+ 
     function goTab(tab) {
       document.querySelectorAll('.tab').forEach((t, i) => t.classList.remove('active'));
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -28,9 +26,9 @@
       document.getElementById('page-' + tab).classList.add('active');
     }
 
-    // ============================================================
+ 
     //  LOCAL STORAGE — HISTÓRICO DE ESCALAS
-    // ============================================================
+ 
     const LS_HISTORICO = 'escala_historico_v2';
     const LS_ATUAL = 'escala_atual_v2';
 
@@ -77,10 +75,12 @@
         escala: JSON.parse(JSON.stringify(escala)),
         idCounter
       };
+
       // Substituir se já existe o mesmo mês/ano
       const idx = historico.findIndex(h => h.config.mes === config.mes && h.config.ano === config.ano);
       if (idx >= 0) historico[idx] = entrada;
       else historico.unshift(entrada);
+
       // Manter no máximo 20 escalas
       if (historico.length > 20) historico.length = 20;
       localStorage.setItem(LS_HISTORICO, JSON.stringify(historico));
@@ -150,9 +150,9 @@
       abrirHistorico();
     }
 
-    // ============================================================
+ 
     //  ENFERMEIROS
-    // ============================================================
+ 
     function adicionarEnfermeiro() {
       const nome = document.getElementById('nomeEnf').value.trim();
       const coren = document.getElementById('corenEnf').value.trim();
@@ -228,9 +228,9 @@
     </table>`;
     }
 
-    // ============================================================
+ 
     //  FOLGAS
-    // ============================================================
+ 
     function updateFolgaSelect() {
       const sel = document.getElementById('folgaNurse');
       sel.innerHTML = enfermeiros.map(e => `<option value="${e.id}">${e.nome}</option>`).join('');
@@ -264,9 +264,8 @@
       }).join('');
     }
 
-    // ============================================================
+ 
     //  FERIADOS
-    // ============================================================
     function adicionarFeriado() {
       const data = document.getElementById('feriadoData').value;
       const desc = document.getElementById('feriadoDesc').value.trim() || 'Feriado';
@@ -278,7 +277,7 @@
       salvarNoLocalStorage();
     }
 
-    function removerFeriado(i) { feriados.splice(i, 1); renderFeriados();DoMessalvarNoLocalStorage(); }
+    function removerFeriado(i) { feriados.splice(i, 1); renderFeriados(); salvarNoLocalStorage(); }
 
     function renderFeriados() {
       document.getElementById('listaFeriados').innerHTML = feriados.map((f, i) =>
@@ -287,7 +286,7 @@
     }
 
     // Busca feriados nacionais na Brasil API e adiciona automaticamente
-    async function importarFeriadosBrasilAPI() {
+    async function importarFeriadosBrasilAPI(silencioso = false) {
       const ano = parseInt(document.getElementById('cfgAno').value) || config.ano;
       const mes = parseInt(document.getElementById('cfgMes').value);
       const btn = document.getElementById('btnImportarFeriados');
@@ -300,16 +299,14 @@
         if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
         const todos = await res.json();
 
-        //Filtra apenas os do mês selecionado
+        // Filtra apenas os do mês selecionado
         const mesPadded = String(mes + 1).padStart(2, '0');
         const doMes = todos.filter(f => f.date.startsWith(`${ano}-${mesPadded}`));
 
-        if (!doMes.length) {
-          btn.disabled = false;
-          btn.textContent = '📅 Importar Feriados Nacionais';
-          alert(`Nenhum feriado nacional encontrado em ${MESES[mes]} ${ano}.`);
-          return;
-        }
+        // Remove feriados que vieram de importação automática de outros meses
+        // (mantém apenas os do mês atual e os adicionados manualmente)
+        const prefixoMesAtual = `${ano}-${mesPadded}`;
+        feriados = feriados.filter(f => f.data.startsWith(prefixoMesAtual));
 
         let adicionados = 0;
         doMes.forEach(f => {
@@ -324,19 +321,30 @@
 
         btn.disabled = false;
         btn.textContent = '📅 Importar Feriados Nacionais';
-        alert(`✅ ${adicionados} feriado(s) importado(s) para ${MESES[mes]} ${ano}!${adicionados < doMes.length ? `\n(${doMes.length - adicionados} já estavam cadastrados)` : ''}`);
+
+        if (!silencioso) {
+          if (!doMes.length) {
+            alert(`Nenhum feriado nacional encontrado em ${MESES[mes]} ${ano}.`);
+          } else {
+            alert(`✅ ${adicionados} feriado(s) importado(s) para ${MESES[mes]} ${ano}!${adicionados < doMes.length ? `\n(${doMes.length - adicionados} já estavam cadastrados)` : ''}`);
+          }
+        }
 
       } catch (err) {
         btn.disabled = false;
         btn.textContent = '📅 Importar Feriados Nacionais';
-        alert(`❌ Erro ao buscar feriados: ${err.message}\nVerifique sua conexão e tente novamente.`);
+        if (!silencioso) {
+          alert(`❌ Erro ao buscar feriados: ${err.message}\nVerifique sua conexão e tente novamente.`);
+        }
       }
     }
 
-    // ============================================================
-    //  CONFIG
-    // ============================================================
+    // Importação automática ao trocar mês ou ano
+    document.getElementById('cfgMes').addEventListener('change', () => importarFeriadosBrasilAPI(true));
+    document.getElementById('cfgAno').addEventListener('change', () => importarFeriadosBrasilAPI(true));
 
+ 
+    //  CONFIG
     function salvarConfig() {
       config.mes = parseInt(document.getElementById('cfgMes').value);
       config.ano = parseInt(document.getElementById('cfgAno').value);
@@ -348,10 +356,15 @@
       alert('✅ Configurações salvas!');
     }
 
-    // ============================================================
-    //  GERAR ESCALA
-    // ============================================================
+    // Importação automática de feriados ao iniciar a página
+    window.addEventListener('DOMContentLoaded', () => {
 
+      // Pequeno delay para garantir que o DOM e localStorage já foram carregados
+      setTimeout(() => importarFeriadosBrasilAPI(true), 500);
+    });
+
+
+    //  GERAR ESCALA
     function diasDoMes(mes, ano) {
       return new Date(ano, mes + 1, 0).getDate();
     }
@@ -397,14 +410,16 @@
         const ehFer = isFeriado(dia);
 
         enfermeiros.forEach(enf => {
+
           // Folgas/férias pré-registradas têm prioridade
           const folgaTipo = getFolgaTipo(enf.id, dia);
           if (folgaTipo) { escala[enf.id][dia] = folgaTipo; return; }
 
-          // ── NOTURNO 12x36 ──────────────────────────────────────────
+          // ── NOTURNO 12x36
           // Ciclo IGNORA feriados e fins de semana — apenas conta os dias corridos.
           // diaInicio: 1 = trabalha no dia 1, folga dia 2, trabalha dia 3...
           //            2 = folga dia 1, trabalha dia 2, folga dia 3...
+
           if (enf.turno === 'N') {
             const diaInicio = enf.diaInicio || 1;
             // posição no ciclo: 0 = trabalha (N), 1 = folga (FO)
@@ -427,8 +442,10 @@
           // O sábado sempre determina o padrão do par. O domingo segue o oposto do sábado da mesma semana.
           // fds='S' → no 1º FDS: Sáb trabalha, Dom folga
           // fds='D' → no 1º FDS: Sáb folga, Dom trabalha
+
           if (ehSabado || ehDomingo) {
             // Encontra o sábado desta semana (pode ser o próprio dia ou o sábado anterior ao domingo)
+
             let sabDessaSemana = dia;
             if (ehDomingo) sabDessaSemana = dia - 1; // domingo sempre vem logo após o sábado
 
@@ -437,6 +454,7 @@
             for (let d2 = 1; d2 < sabDessaSemana; d2++) {
               if (diaDaSemana(d2, config.mes, config.ano) === 6) idxSab++;
             }
+            
             // fds='S': índice par → Sáb trabalha, Dom folga | índice ímpar → Sáb folga, Dom trabalha
             // fds='D': índice par → Sáb folga, Dom trabalha | índice ímpar → Sáb trabalha, Dom folga
             const sabTrabalha = enf.fds === 'S' ? (idxSab % 2 === 0) : (idxSab % 2 !== 0);
@@ -470,9 +488,7 @@
       }
     }
 
-    // ============================================================
-    //  RENDER ESCALA
-    // ============================================================
+    //   ESCALA
     function renderEscala() {
       const totalDias = diasDoMes(config.mes, config.ano);
       document.getElementById('escalaTitle').textContent = `Escala — ${MESES[config.mes]} ${config.ano}`;
@@ -532,13 +548,11 @@
       return f ? f.desc : 'Feriado';
     }
 
-    // ============================================================
     //  CONTEXT MENU — ALTERAÇÃO DE TURNOS
-    // ============================================================
     let ctxOpen = false;
 
     function openCtx(e, nurseId, day) {
-      if (e.button !== 0) return; // apenas clique esquerdo
+      if (e.button !== 0) return;
       e.preventDefault();
       e.stopPropagation();
       activeCell = { nurseId, day };
@@ -563,7 +577,7 @@
       salvarNoLocalStorage();
     }
 
-    // Fechar menu ao clicar fora — usa mousedown para capturar antes do click
+    // Fechar menu ao clicar fora
     document.addEventListener('mousedown', (e) => {
       const menu = document.getElementById('ctxMenu');
       if (menu && !menu.contains(e.target)) {
@@ -572,9 +586,7 @@
       }
     });
 
-    // ============================================================
     //  VERIFICAR COBERTURA MÍNIMA
-    // ============================================================
     function verificarCobertura(totalDias) {
       const alertas = [];
       for (let d = 1; d <= totalDias; d++) {
@@ -595,15 +607,14 @@
         } else if (ehSab || ehDom) {
           if (countFds < config.minFds) alertas.push(`FDS Dia ${d}: Cobertura insuficiente (${countFds}/${config.minFds})`);
         }
+
         // Noite: verificar todos os dias (12x36 pode naturalmente ter folgas)
         if (countN < config.minNoite) alertas.push(`Dia ${d}: Noite insuficiente (${countN}/${config.minNoite})`);
       }
       return alertas;
     }
 
-    // ============================================================
     //  RELATÓRIO
-    // ============================================================
     function renderRelatorio() {
       const totalDias = diasDoMes(config.mes, config.ano);
       const div = document.getElementById('relatorioContent');
@@ -678,10 +689,8 @@
       div.innerHTML = html;
     }
 
-    // ============================================================
-    //  EXPORTA CSV (sem dependência externa — funciona offline)
-    // ============================================================
 
+// EXPORTA PARA CSV
     function exportExcel() {
       if (!Object.keys(escala).length) {
         alert('Gere a escala antes de exportar.');
@@ -734,9 +743,7 @@
       URL.revokeObjectURL(url);
     }
 
-    // ============================================================
     //  INIT
-    // ============================================================
     (function init() {
       const agora = new Date();
       config.mes = agora.getMonth();
