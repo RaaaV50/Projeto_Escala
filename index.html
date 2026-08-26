@@ -16,7 +16,9 @@
 
   <header>
     <div class="logo">
-      <div class="logo-icon">🏥</div>
+      <div class="logo-icon">
+        <i data-lucide="activity" stroke-width="2.5" color="#fff"></i>
+      </div>
       <div>
         <h1>ESCALA DE ENFERMEIROS</h1>
         <span>Sistema de Distribuição de Escalas</span>
@@ -24,24 +26,37 @@
     </div>
     <div class="header-actions">
       <button id="btnImportarFeriados" class="btn btn-primary" onclick="importarFeriadosBrasilAPI()">
-            📅 Importar Feriados Nacionais
-          </button>
-      <button class="btn btn-secondary btn-sm" data-tip="Histórico de escalas salvas" onclick="abrirHistorico()">🗂️ Escalas Anteriores</button>
+        <i data-lucide="calendar-plus" class="btn-icon"></i> Importar Feriados Nacionais
+      </button>
+      <button class="btn btn-secondary btn-sm" data-tip="Histórico de escalas salvas" onclick="abrirHistorico()">
+        <i data-lucide="history" class="btn-icon"></i> Escalas Anteriores
+      </button>
       <button class="btn btn-secondary btn-sm"
         onclick="localStorage.clear(); alert('Escalas e Enfermeiros anteriormente adicionados serão apagados!'); location.reload();">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-        </svg>Limpar Dados</button>
-      <button class="btn btn-secondary btn-sm" onclick="exportExcel()">📊 Exportar CSV</button>
-      <button class="btn btn-primary btn-sm" onclick="gerarEscala()">⚡ Gerar Escala</button>
+        <i data-lucide="trash-2" class="btn-icon"></i> Limpar Dados
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="exportExcel()">
+        <i data-lucide="file-spreadsheet" class="btn-icon"></i> Exportar CSV
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="gerarEscala()">
+        <i data-lucide="zap" class="btn-icon"></i> Gerar Escala
+      </button>
     </div>
   </header>
 
   <div class="tabs">
-    <div class="tab active" onclick="goTab('enfermeiros')">👥 Enfermeiros</div>
-    <div class="tab" onclick="goTab('configuracoes')">⚙️ Configurações</div>
-    <div class="tab" onclick="goTab('escala')">📅 Escala</div>
-    <div class="tab" onclick="goTab('relatorio')">📊 Relatório</div>
+    <div class="tab active" onclick="goTab('enfermeiros')">
+      <i data-lucide="users" class="tab-icon"></i> Enfermeiros
+    </div>
+    <div class="tab" onclick="goTab('configuracoes')">
+      <i data-lucide="settings" class="tab-icon"></i> Configurações
+    </div>
+    <div class="tab" onclick="goTab('escala')">
+      <i data-lucide="calendar-days" class="tab-icon"></i> Escala
+    </div>
+    <div class="tab" onclick="goTab('relatorio')">
+      <i data-lucide="bar-chart-3" class="tab-icon"></i> Relatório
+    </div>
   </div>
 
   <div class="main">
@@ -51,7 +66,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            ➕ Adicionar Enfermeiro
+            <i data-lucide="user-plus" class="title-icon"></i> Adicionar Enfermeiro
           </div>
         </div>
         <div class="form-grid">
@@ -66,9 +81,9 @@
           <div class="form-group">
             <label>Turno preferencial</label>
             <select id="turnoEnf">
-              <option value="M">☀️ Manhã (6h dias úteis · 12h FDS alternado)</option>
-              <option value="T">🌤️ Tarde (6h dias úteis · 12h FDS alternado)</option>
-              <option value="N">🌙 Noite (12x36h — ciclo corrido)</option>
+              <option value="M">Manhã (6h dias úteis · 12h FDS alternado)</option>
+              <option value="T">Tarde (6h dias úteis · 12h FDS alternado)</option>
+              <option value="N">Noite (12x36h — ciclo corrido)</option>
             </select>
           </div>
           <div class="form-group" id="diaInicioGroup" style="display:none;">
@@ -86,19 +101,26 @@
             </select>
           </div>
         </div>
-        <div style="margin-top:1rem; display:flex; gap:0.75rem;">
-          <button class="btn btn-primary" onclick="adicionarEnfermeiro()">➕ Adicionar</button>
-          <button class="btn btn-secondary" onclick="adicionarExemplos()">🧪 Carregar exemplos</button>
+        <div style="margin-top:1.5rem; display:flex; gap:0.75rem;">
+          <button class="btn btn-primary" onclick="adicionarEnfermeiro()">
+            <i data-lucide="plus" class="btn-icon"></i> Adicionar
+          </button>
+          <button class="btn btn-secondary" onclick="adicionarExemplos()">
+            <i data-lucide="flask-conical" class="btn-icon"></i> Carregar exemplos
+          </button>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">👥 Equipe <span class="nurse-count-badge" id="nurseCount">0</span></div>
+          <div class="card-title">
+            <i data-lucide="users" class="title-icon"></i> Equipe <span class="nurse-count-badge"
+              id="nurseCount">0</span>
+          </div>
         </div>
         <div id="tabelaEnfermeiros">
           <div class="empty-state">
-            <div class="icon">👩‍⚕️</div>
+            <i data-lucide="users" class="empty-icon"></i>
             <h3>Nenhum enfermeiro cadastrado</h3>
             <p>Adicione enfermeiros ou carregue os exemplos</p>
           </div>
@@ -106,7 +128,9 @@
       </div>
 
       <div class="card" id="folgasCard">
-        <div class="card-title" style="margin-bottom:1.25rem;">📋 Folgas e Férias</div>
+        <div class="card-title" style="margin-bottom:1.25rem;">
+          <i data-lucide="calendar-off" class="title-icon"></i> Folgas e Férias
+        </div>
         <div class="form-grid">
           <div class="form-group">
             <label>Enfermeiro</label>
@@ -115,8 +139,8 @@
           <div class="form-group">
             <label>Tipo</label>
             <select id="folgaTipo">
-              <option value="FO">🟢 Folga</option>
-              <option value="FE">🔴 Férias</option>
+              <option value="FO">Folga</option>
+              <option value="FE">Férias</option>
             </select>
           </div>
           <div class="form-group">
@@ -128,16 +152,20 @@
             <input type="date" id="folgaFim">
           </div>
         </div>
-        <button class="btn btn-secondary" style="margin-top:1rem;" onclick="adicionarFolga()">➕ Registrar</button>
+        <button class="btn btn-secondary" style="margin-top:1.5rem;" onclick="adicionarFolga()">
+          <i data-lucide="plus" class="btn-icon"></i> Registrar
+        </button>
 
-        <div id="listaFolgas" style="margin-top:1.25rem;"></div>
+        <div id="listaFolgas" style="margin-top:1.5rem;"></div>
       </div>
     </div>
 
     <!-- =================== CONFIGURAÇÕES =================== -->
     <div class="page" id="page-configuracoes">
       <div class="card">
-        <div class="card-title" style="margin-bottom:1.25rem;">📅 Período da Escala</div>
+        <div class="card-title" style="margin-bottom:1.25rem;">
+          <i data-lucide="calendar" class="title-icon"></i> Período da Escala
+        </div>
         <div class="form-grid">
           <div class="form-group">
             <label>Mês</label>
@@ -164,29 +192,33 @@
       </div>
 
       <div class="card">
-        <div class="card-title" style="margin-bottom:1.25rem;">🔢 Cobertura Mínima por Turno</div>
+        <div class="card-title" style="margin-bottom:1.25rem;">
+          <i data-lucide="users-2" class="title-icon"></i> Cobertura Mínima por Turno
+        </div>
         <div class="form-grid">
           <div class="form-group">
-            <label>☀️ Manhã — dias úteis (mín. enfermeiros)</label>
+            <label>Manhã — dias úteis</label>
             <input type="number" id="cfgMinManha" value="2" min="1" max="20">
           </div>
           <div class="form-group">
-            <label>🌤️ Tarde — dias úteis (mín. enfermeiros)</label>
+            <label>Tarde — dias úteis</label>
             <input type="number" id="cfgMinTarde" value="2" min="1" max="20">
           </div>
           <div class="form-group">
-            <label>🌙 Noite — todos os dias (mín. enfermeiros)</label>
+            <label>Noite — todos os dias</label>
             <input type="number" id="cfgMinNoite" value="1" min="1" max="20">
           </div>
           <div class="form-group">
-            <label>🏥 Fim de semana por turno (mín.)</label>
+            <label>Fim de semana por turno</label>
             <input type="number" id="cfgMinFds" value="1" min="1" max="20">
           </div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title" style="margin-bottom:1.25rem;">⏰ Carga Horária</div>
+        <div class="card-title" style="margin-bottom:1.25rem;">
+          <i data-lucide="clock" class="title-icon"></i> Carga Horária
+        </div>
         <div class="form-grid">
           <div class="form-group">
             <label>Horas diárias (dias úteis)</label>
@@ -201,34 +233,41 @@
             <input type="text" value="12h trabalho / 36h folga" readonly style="opacity:0.6">
           </div>
         </div>
-        <p style="font-size:0.8rem; color: var(--text2); margin-top:0.75rem;">
-          ℹ️ Configuração conforme sua escala: 6h dias úteis, 10h fim de semana (sábado alternado / domingo alternado),
-          noite 12x36h.
+        <p
+          style="font-size:0.8rem; color: var(--text2); margin-top:1rem; display:flex; align-items:center; gap:0.5rem;">
+          <i data-lucide="info" style="width:16px;height:16px;"></i> Configuração base: 6h dias úteis, 10h fim de semana
+          (sábado/domingo alternados), noite 12x36h.
         </p>
       </div>
 
       <div class="card">
-        <div class="card-title" style="margin-bottom:1.25rem;">🔴 Feriados do Mês</div>
-        <div style="display:flex; gap:0.75rem; align-items:flex-end;">
-          <div class="form-group" style="flex:1; margin-bottom:0;">
+        <div class="card-title" style="margin-bottom:1.25rem;">
+          <i data-lucide="flag" class="title-icon"></i> Feriados do Mês
+        </div>
+        <div class="feriados-input-row">
+          <div class="form-group flex-1">
             <label>Data do feriado</label>
             <input type="date" id="feriadoData">
           </div>
-          <div class="form-group" style="flex:2; margin-bottom:0;">
+          <div class="form-group flex-2">
             <label>Descrição</label>
             <input type="text" id="feriadoDesc" placeholder="Ex: Corpus Christi">
           </div>
-          <button class="btn btn-secondary" onclick="adicionarFeriado()">➕ Adicionar</button>
+          <button class="btn btn-secondary mt-auto" onclick="adicionarFeriado()">
+            <i data-lucide="plus" class="btn-icon"></i> Adicionar
+          </button>
         </div>
         <div style="margin-top:1rem;">
-          <small style="display:block; margin-top:0.4rem; color:var(--text2);">
+          <small style="display:block; color:var(--text2);">
             Busca automaticamente os feriados nacionais do mês/ano configurado via Brasil API.
           </small>
         </div>
         <div id="listaFeriados" class="tag-list" style="margin-top:1rem;"></div>
       </div>
 
-      <button class="btn btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
+      <button class="btn btn-primary" onclick="salvarConfig()">
+        <i data-lucide="save" class="btn-icon"></i> Salvar Configurações
+      </button>
     </div>
 
     <!-- =================== ESCALA =================== -->
@@ -260,16 +299,17 @@
           <div class="legend-dot cell-FE">V</div> Férias
         </div>
         <div class="legend-item">
-          <div class="legend-dot cell-FERIADO">🔴</div> Feriado
+          <div class="legend-dot cell-FERIADO"></div> Feriado
         </div>
-        <p style="font-size:0.7rem; color:var(--text2); margin-left:auto;">Clique em qualquer célula para editar</p>
+        <p class="legend-hint"><i data-lucide="mouse-pointer-click" style="width:14px;height:14px;"></i> Clique em
+          qualquer célula para editar</p>
       </div>
 
-      <div class="card" style="padding:1rem;">
+      <div class="card p-0">
         <div class="schedule-container">
           <div id="escalaGrid">
             <div class="empty-state">
-              <div class="icon">📅</div>
+              <i data-lucide="calendar" class="empty-icon"></i>
               <h3>Escala não gerada</h3>
               <p>Clique em "Gerar Escala" para distribuir automaticamente</p>
             </div>
@@ -282,7 +322,7 @@
     <div class="page" id="page-relatorio">
       <div id="relatorioContent">
         <div class="empty-state">
-          <div class="icon">📊</div>
+          <i data-lucide="bar-chart-2" class="empty-icon"></i>
           <h3>Gere a escala primeiro</h3>
           <p>O relatório aparecerá automaticamente após gerar a escala</p>
         </div>
@@ -294,8 +334,14 @@
   <!-- HISTÓRICO MODAL -->
   <div class="historico-overlay" id="historicoOverlay" onclick="fecharHistorico(event)">
     <div class="historico-panel">
-      <h2>🗂️ Histórico de Escalas <button class="btn btn-secondary btn-sm"
-          onclick="document.getElementById('historicoOverlay').classList.remove('show')">✕ Fechar</button></h2>
+      <h2>
+        <span style="display:flex;align-items:center;gap:0.5rem;"><i data-lucide="history"></i> Histórico de
+          Escalas</span>
+        <button class="btn btn-secondary btn-sm"
+          onclick="document.getElementById('historicoOverlay').classList.remove('show')">
+          <i data-lucide="x" class="btn-icon"></i> Fechar
+        </button>
+      </h2>
       <div id="historicoList"></div>
     </div>
   </div>
@@ -334,7 +380,8 @@
   <!-- MODAL ADD NURSE SUCCESS -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <h2 id="modalTitle">✅ Enfermeiro adicionado</h2>
+      <h2 id="modalTitle" style="display:flex;align-items:center;gap:0.5rem;"><i data-lucide="check-circle-2"
+          color="var(--accent)"></i> Enfermeiro adicionado</h2>
       <p id="modalMsg" style="color:var(--text2);">Cadastro realizado com sucesso. Gere a escala para incluir este
         profissional.</p>
       <div class="modal-actions">
@@ -344,7 +391,36 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="app.js"></script>
+  <script>
+    // Safe initialization for Lucide
+    function initIcons() {
+      if (window.lucide) {
+        lucide.createIcons();
+        const observer = new MutationObserver((mutations) => {
+          let shouldUpdate = false;
+          mutations.forEach(mutation => {
+            if (mutation.addedNodes.length > 0) shouldUpdate = true;
+          });
+          if (shouldUpdate) {
+            // Disconnect temporarily to avoid infinite loops if it mutates
+            observer.disconnect();
+            lucide.createIcons();
+            observer.observe(document.body, { childList: true, subtree: true });
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+    }
+    
+    // Check if it's already loaded or wait for it
+    if (window.lucide) {
+      initIcons();
+    } else {
+      window.addEventListener('load', initIcons);
+    }
+  </script>
 </body>
 
 </html>
